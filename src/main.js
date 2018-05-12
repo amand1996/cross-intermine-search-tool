@@ -20,6 +20,7 @@ Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
+  mode: 'history',
   el: '#app',
   router,
   components: { App },
