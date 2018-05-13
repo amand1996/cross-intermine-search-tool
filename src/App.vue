@@ -45,9 +45,10 @@
               <v-list-tile-action v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-tile-action>
+              
               <v-list-tile-content>
                 <v-list-tile-title>
-                  {{ child.text }}
+                  <v-checkbox v-model="selected" :label="child.text" color="success" :value="child.text"></v-checkbox>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -127,19 +128,22 @@
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     data: () => ({
       dialog: false,
       drawer: null,
+      errors: [],
       items: [
         { icon: 'history', text: 'Frequently searched' },
         {
           icon: 'keyboard_arrow_up',
           'icon-alt': 'keyboard_arrow_down',
-          text: 'Filter',
+          text: 'Select Intermines',
           model: true,
           children: [
-            { icon: 'add', text: 'All' }
+            { text: 'All' }
           ]
         },
         {
@@ -148,19 +152,30 @@
           text: 'More',
           model: false,
           children: [
-            { text: 'Import' },
-            { text: 'Export' },
-            { text: 'Print' },
-            { text: 'Undo changes' }
+            // { text: 'Import' },
+            // { text: 'Export' },
+            // { text: 'Print' },
+            // { text: 'Undo changes' }
           ]
         },
         { icon: 'settings', text: 'Settings' },
         { icon: 'chat_bubble', text: 'Chat with us' },
         { icon: 'help', text: 'Help' }
-      ]
+      ],
+      selected: []
     }),
     props: {
       source: String
+    },
+    created () {
+      axios.get(`http://registry.intermine.org/service/instances`)
+      .then(response => {
+        response.data.instances.map((mine) => {
+          this.items[1].children.push({
+            text: mine.name
+          })
+        })
+      })
     }
   }
 </script>
