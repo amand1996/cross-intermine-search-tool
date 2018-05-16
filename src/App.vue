@@ -8,23 +8,8 @@
     >
       <v-list dense>
         <template v-for="item in items">
-          <v-layout
-            v-if="item.heading"
-            :key="item.heading"
-            row
-            align-center
-          >
-            <v-flex xs6>
-              <v-subheader v-if="item.heading">
-                {{ item.heading }}
-              </v-subheader>
-            </v-flex>
-            <v-flex xs6 class="text-xs-center">
-              <a href="#!" class="body-2 black--text">EDIT</a>
-            </v-flex>
-          </v-layout>
           <v-list-group
-            v-else-if="item.children"
+            v-if="item.children"
             v-model="item.model"
             :key="item.text"
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
@@ -37,6 +22,23 @@
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
+
+            <v-list-tile @click="selectAll">
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-text>Select All</v-text>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            
+            <v-list-tile @click="selectNone">
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-text>Select None</v-text>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
             <v-list-tile
               v-for="(child, i) in item.children"
               :key="i"
@@ -83,6 +85,8 @@
         prepend-icon="search"
         label="Search"
         class="hidden-sm-and-down"
+        @keyup.enter="searchMine"
+        v-model="searchTerm"
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-btn icon>
@@ -101,40 +105,51 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height>
-        <v-layout justify-center align-center>
-          <v-tooltip right>
-            <v-btn
-              slot="activator"
-              :href="source"
-              icon
-              large
-              target="_blank"
-            >
-              <v-icon large>code</v-icon>
-            </v-btn>
-            <span>Source</span>
-          </v-tooltip>
-          <v-tooltip right>
-            <v-btn slot="activator" icon large href="https://codepen.io/johnjleider/pen/EQOYVV" target="_blank">
-              <v-icon large>mdi-codepen</v-icon>
-            </v-btn>
-            <span>Codepen</span>
-          </v-tooltip>
-        </v-layout>
-      </v-container>
+      <v-tabs
+        dark
+        color="green"
+        show-arrows
+        grow
+      >
+        <v-tabs-slider color="yellow"></v-tabs-slider>
+        <v-tab v-if="this.selected.length == 0" disabled>
+          Please select an Intermine
+        </v-tab>
+        <v-tab
+          v-else
+          v-for="i in this.selected.length"
+          :key="i"
+          :href="'#tab-' + i"
+        >
+          {{ selected[i] }}
+        </v-tab>
+        <v-tabs-items>
+          <v-tab-item
+            v-for="i in this.selected.length"
+            :key="i"
+            :id="'tab-' + i"
+          >
+            <v-card flat>
+              <v-card-text>{{ text }}</v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-tabs>
     </v-content>
   </v-app>
 </template>
 
 <script>
   import axios from 'axios'
+  import intermine from 'imjs'
 
   export default {
     data: () => ({
       dialog: false,
       drawer: null,
+      tab: null,
       errors: [],
+      searchTerm: '',
       items: [
         { icon: 'history', text: 'Frequently searched' },
         {
@@ -143,7 +158,7 @@
           text: 'Select Intermines',
           model: true,
           children: [
-            { text: 'All' }
+            // { text: 'All' }
           ]
         },
         {
@@ -162,8 +177,32 @@
         { icon: 'chat_bubble', text: 'Chat with us' },
         { icon: 'help', text: 'Help' }
       ],
-      selected: []
+      selected: [],
+      result: ''
     }),
+    methods: {
+      searchMine () {
+        var flymine = new intermine.Service({root: 'www.flymine.org/query'})
+        var options = {
+          q: this.searchTerm,
+          size: 50,
+          start: 100
+        }
+        flymine.search(options).then((data) => {
+          this.result = JSON.stringify(data)
+          console.log(data)
+        })
+      },
+      selectAll () {
+        this.selected = []
+        this.items[1].children.map((item) => {
+          this.selected.push(item.text)
+        })
+      },
+      selectNone () {
+        this.selected = []
+      }
+    },
     props: {
       source: String
     },
