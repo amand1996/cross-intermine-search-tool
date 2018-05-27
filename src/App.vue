@@ -72,7 +72,7 @@
     </v-navigation-drawer>
     <v-toolbar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
-      color="green darken-3"
+      color="teal darken-3"
       dark
       app
       fixed
@@ -109,7 +109,7 @@
     <v-content>
       <v-tabs
         dark
-        color="green"
+        color="teal darken-1"
         show-arrows
         grow
       >
@@ -125,15 +125,62 @@
         >
           {{ selectedMine.text }}
         </v-tab>
-        <v-tabs-items>
+        <v-tabs-items fixed>
           <v-tab-item
             v-for="(selectedMine, i) in this.selected"
             :key="i"
             :id="'tab-' + i"
           >
-            <v-card flat>
-              <v-card-text>{{ selectedMine.result }}</v-card-text>
+            <v-card>
+              <v-toolbar
+               color="teal lighten-1"
+               dark
+               height=50
+              >
+                <v-toolbar-title>Search Results for <strong>{{ selectedMine.text }}</strong></v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-toolbar>
             </v-card>
+
+            <template v-if="selectedMine.result == undefined">
+              No results
+            </template>
+
+            <template v-else>
+              <v-card>
+                <v-container
+                  fluid
+                  style="min-height: 0;"
+                  grid-list-lg
+                >
+                  <v-layout row wrap>
+                    <v-flex xs12 v-for="(mineResults, i) in selectedMine.result.results"
+                        :key="i">
+                      <v-card
+                        color="green lighten-1"
+                        hover
+                        dark
+                        >
+                          <v-card-title primary-title>
+                            <div class="headline"><strong>ID - {{ mineResults.id }}</strong></div>
+                            <v-card-actions>
+                              <v-btn icon ripple>
+                                <v-icon color="white">info</v-icon>
+                              </v-btn>
+                            </v-card-actions>
+                              <v-card-text>
+                                <template v-for="(mineResultsField, key, j) in mineResults.fields">
+                                    <span :key="j"><strong> {{ key.toUpperCase() }}</strong> - {{ mineResultsField }}</span><br>
+                                </template>
+                            </v-card-text>
+                          </v-card-title>
+                        </v-card>
+                    </v-flex>
+                  </v-layout>
+                </v-container>
+              </v-card>
+            </template>
+
           </v-tab-item>
         </v-tabs-items>
       </v-tabs>
@@ -194,7 +241,7 @@
             // start: 100
           }
           mineService.search(options).then((data) => {
-            // console.log(data)
+            console.log(JSON.stringify(data))
             mineObj.result = data
           })
         })
