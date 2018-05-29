@@ -117,15 +117,97 @@
         <v-tab v-if="this.selected.length == 0" disabled>
           Please select an Intermine
         </v-tab>
-        <v-tab
-          v-else
-          v-for="(selectedMine, i) in this.selected"
-          :key="i"
-          :href="'#tab-' + i"
-        >
-          {{ selectedMine.text }}
-        </v-tab>
+
+        <template v-else>
+          <v-tab
+            :href="'#tab-all'"
+          >
+            All Mines
+          </v-tab>
+          <v-tab
+            v-for="(selectedMine, i) in this.selected"
+            :key="i"
+            :href="'#tab-' + i"
+          >
+            {{ selectedMine.text }}
+          </v-tab>
+        </template>
+        
+
         <v-tabs-items fixed>
+          <v-tab-item
+            :id="'tab-all'"
+          >
+            <v-card>
+              <v-toolbar
+               color="teal lighten-1"
+               dark
+               height=50
+              >
+                <v-toolbar-title>Search Results for <strong>All Mines</strong></v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-toolbar>
+            </v-card>
+
+            
+
+            <!-- <template v-if="selectedMine.result == undefined">
+              No results
+            </template> -->
+
+            <template>
+              <v-card
+                v-for="(selectedMine, i) in this.selected"
+                :key="i"
+              >
+                <v-container
+                  fluid
+                  style="min-height: 0;"
+                  grid-list-lg
+                >
+                  <v-layout row>
+                    <v-flex xs12>
+                      <v-toolbar color="green darken-1" dark flat>
+                          <v-toolbar-title>{{ selectedMine.text }}</v-toolbar-title>
+                          <v-spacer></v-spacer>
+                      </v-toolbar>
+                      <v-card height="300" style="overflow-y: auto;">
+                        
+                        <v-list three-line subheader>
+                          <template v-if="selectedMine.result == undefined">
+                            No results
+                          </template>
+                          <template v-else>
+                            <v-list-tile v-for="(mineResults, i) in selectedMine.result.results" :key="i" avatar @click="">
+                              <v-list-tile-avatar>
+                                <strong>{{ i+1 }}</strong>
+                              </v-list-tile-avatar>
+                              <v-list-tile-content>
+                                <v-list-tile-title><strong>ID - {{ mineResults.id }}</strong></v-list-tile-title>
+                                <v-list-tile-sub-title>
+                                  <template v-for="(mineResultsField, key, j) in mineResults.fields">
+                                    <span :key="j"><strong>{{ key.toUpperCase() }}</strong> - {{ mineResultsField }} | </span>
+                                  </template>
+                                </v-list-tile-sub-title>
+                              </v-list-tile-content>
+                              <v-list-tile-action>
+                                <v-btn icon ripple>
+                                  <v-icon color="grey lighten-1">info</v-icon>
+                                </v-btn>
+                              </v-list-tile-action>
+                            </v-list-tile>
+                          </template>
+                        </v-list>
+                      </v-card>
+                    </v-flex>
+                  </v-layout>
+                  <br>
+                </v-container>
+              </v-card>
+            </template>
+
+          </v-tab-item>
+
           <v-tab-item
             v-for="(selectedMine, i) in this.selected"
             :key="i"
@@ -233,7 +315,7 @@
     methods: {
       searchMine () {
         let vm = this
-        this.selected.map((mineObj) => {
+        vm.selected.map((mineObj) => {
           let mineService = new intermine.Service({root: mineObj.url})
           let options = {
             q: vm.searchTerm
@@ -241,8 +323,8 @@
             // start: 100
           }
           mineService.search(options).then((data) => {
-            console.log(JSON.stringify(data))
             mineObj.result = data
+            vm.$forceUpdate()
           })
         })
       },
