@@ -174,9 +174,14 @@
                       <v-card height="300" style="overflow-y: auto;">
                         
                         <v-list three-line subheader>
+                          
                           <template v-if="selectedMine.result == undefined">
-                            No results
+                            <h3 style="text-align: center;">Please search using a keyword.</h3>
                           </template>
+                          <template v-else-if="selectedMine.result.results.length == 0">
+                            <h3 style="text-align: center;">No results found.</h3>
+                          </template>
+
                           <template v-else>
                             <v-list-tile v-for="(mineResults, i) in selectedMine.result.results" :key="i" avatar @click="">
                               <v-list-tile-avatar>
@@ -225,7 +230,10 @@
             </v-card>
 
             <template v-if="selectedMine.result == undefined">
-              No results
+              <h3 style="text-align: center;">Please search using a keyword.</h3>
+            </template>
+            <template v-else-if="selectedMine.result.results.length == 0">
+              <h3 style="text-align: center;">No results found.</h3>
             </template>
 
             <template v-else>
@@ -283,7 +291,7 @@
       searchTerm: '',
       text: '',
       items: [
-        { icon: 'history', text: 'Frequently searched' },
+        { icon: 'history', text: 'Home' },
         {
           icon: 'keyboard_arrow_up',
           'icon-alt': 'keyboard_arrow_down',
@@ -324,6 +332,7 @@
           }
           mineService.search(options).then((data) => {
             mineObj.result = data
+            console.log(JSON.stringify(data))
             vm.$forceUpdate()
           })
         })
