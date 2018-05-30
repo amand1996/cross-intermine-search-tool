@@ -185,7 +185,6 @@
           </v-tab>
         </template>
         
-
         <v-tabs-items fixed>
           <v-tab-item
             :id="'tab-all'"
@@ -200,8 +199,6 @@
                 <v-spacer></v-spacer>
               </v-toolbar>
             </v-card>
-
-            
 
             <!-- <template v-if="selectedMine.result == undefined">
               No results
@@ -240,7 +237,15 @@
                                 <strong>{{ i+1 }}</strong>
                               </v-list-tile-avatar>
                               <v-list-tile-content>
-                                <v-list-tile-title><strong>ID - {{ mineResults.id }}</strong></v-list-tile-title>
+                                <v-list-tile-title>
+                                  <strong>ID - {{ mineResults.id }}</strong>
+                                  <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
+                                    <v-icon color="yellow" :key="searchPoints + '_active'">star</v-icon>
+                                  </template>
+                                  <template v-for="searchPoints in (5 - calculateSearchPoints(mineResults.relevance))">
+                                    <v-icon color="white" :key="searchPoints + '_inactive'">star</v-icon>
+                                  </template>
+                                </v-list-tile-title>
                                 <v-list-tile-sub-title>
                                   <template v-for="(mineResultsField, key, j) in mineResults.fields">
                                     <span :key="j"><strong>{{ key.toUpperCase() }}</strong> - {{ mineResultsField }} | </span>
@@ -304,16 +309,22 @@
                         dark
                         >
                           <v-card-title primary-title>
+                            <v-btn icon ripple>
+                              <v-icon color="white">info</v-icon>
+                            </v-btn>
                             <div class="headline"><strong>ID - {{ mineResults.id }}</strong></div>
-                            <v-card-actions>
-                              <v-btn icon ripple>
-                                <v-icon color="white">info</v-icon>
-                              </v-btn>
+                            <v-card-actions>  
+                              <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
+                                <v-icon color="yellow" :key="searchPoints + '_active'">star</v-icon>
+                              </template>
+                              <template v-for="searchPoints in (5 - calculateSearchPoints(mineResults.relevance))">
+                                <v-icon color="white" :key="searchPoints + '_inactive'">star</v-icon>
+                              </template>
                             </v-card-actions>
-                              <v-card-text>
-                                <template v-for="(mineResultsField, key, j) in mineResults.fields">
-                                    <span :key="j"><strong> {{ key.toUpperCase() }}</strong> - {{ mineResultsField }}</span><br>
-                                </template>
+                            <v-card-text>
+                              <template v-for="(mineResultsField, key, j) in mineResults.fields">
+                                  <span :key="j"><strong> {{ key.toUpperCase() }}</strong> - {{ mineResultsField }}</span><br>
+                              </template>
                             </v-card-text>
                           </v-card-title>
                         </v-card>
@@ -387,6 +398,9 @@
       },
       selectNone () {
         this.selected = []
+      },
+      calculateSearchPoints (score) {
+        return Math.round(Math.max(0.1, Math.min(1, score)) * 5)
       }
     },
     props: {
