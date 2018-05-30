@@ -7,18 +7,27 @@
       app
     >
       <v-list dense>
-        <template v-for="item in items">
+        <template> 
+          <v-list-tile @click="">
+            <v-list-tile-action>
+              <v-icon>home</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Home
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
           <v-list-group
-            v-if="item.children"
-            v-model="item.model"
-            :key="item.text"
-            :prepend-icon="item.model ? item.icon : item['icon-alt']"
+            v-model="selectIntermines.model"
+            :prepend-icon="selectIntermines.model ? selectIntermines.icon : selectIntermines['icon-alt']"
             append-icon=""
           >
             <v-list-tile slot="activator">
               <v-list-tile-content>
                 <v-list-tile-title>
-                  {{ item.text }}
+                  {{ selectIntermines.text }}
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -40,7 +49,7 @@
             </v-list-tile>
 
             <v-list-tile
-              v-for="(child, i) in item.children"
+              v-for="(child, i) in selectIntermines.children"
               :key="i"
               @click=""
             >
@@ -56,20 +65,63 @@
             </v-list-tile>
           </v-list-group>
 
-          <v-list-tile v-else :key="item.text" @click="">
+          <v-list-group
+            v-model="filters.model"
+            :prepend-icon="filters.model ? filters.icon : filters['icon-alt']"
+            append-icon=""
+          >
+            <v-list-tile slot="activator">
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  {{ filters.text }}
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
+            <v-list-tile
+              v-for="(child, i) in filters.children"
+              :key="i"
+              @click=""
+            >
+              <v-list-tile-action v-if="child.icon">
+                <v-icon>{{ child.icon }}</v-icon>
+              </v-list-tile-action>
+              
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-checkbox v-model="selectedFilters" :label="child.text" color="success" :value="child"></v-checkbox>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-group>
+
+          <v-list-tile @click="">
             <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
+              <v-icon>chat_bubble</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
-                {{ item.text }}
+                Chat with us!
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-          
+
+          <v-list-tile @click="">
+            <v-list-tile-action>
+              <v-icon>help</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Help
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
         </template>
       </v-list>
     </v-navigation-drawer>
+
+    
     <v-toolbar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       color="teal darken-3"
@@ -290,34 +342,24 @@
       errors: [],
       searchTerm: '',
       text: '',
-      items: [
-        { icon: 'history', text: 'Home' },
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'Select Intermines',
-          model: true,
-          children: [
-            // { text: 'All' }
-          ]
-        },
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'More',
-          model: false,
-          children: [
-            // { text: 'Import' },
-            // { text: 'Export' },
-            // { text: 'Print' },
-            // { text: 'Undo changes' }
-          ]
-        },
-        { icon: 'settings', text: 'Settings' },
-        { icon: 'chat_bubble', text: 'Chat with us' },
-        { icon: 'help', text: 'Help' }
-      ],
+      selectIntermines: {
+        icon: 'keyboard_arrow_up',
+        'icon-alt': 'keyboard_arrow_down',
+        text: 'Select Intermines',
+        model: true,
+        children: []
+      },
+      filters: {
+        icon: 'keyboard_arrow_up',
+        'icon-alt': 'keyboard_arrow_down',
+        text: 'Filters',
+        model: false,
+        children: [
+          {'text': 'Plants'}
+        ]
+      },
       selected: [],
+      selectedFilters: [],
       result: ''
     }),
     methods: {
@@ -332,7 +374,6 @@
           }
           mineService.search(options).then((data) => {
             mineObj.result = data
-            console.log(JSON.stringify(data))
             vm.$forceUpdate()
           })
         })
@@ -340,7 +381,7 @@
       selectAll () {
         let vm = this
         vm.selected = []
-        vm.items[1].children.map((item) => {
+        vm.selectIntermines.children.map((item) => {
           vm.selected.push(item)
         })
       },
@@ -355,7 +396,7 @@
       axios.get(`http://registry.intermine.org/service/instances`)
       .then(response => {
         response.data.instances.map((mine) => {
-          this.items[1].children.push({
+          this.selectIntermines.children.push({
             text: mine.name,
             url: mine.url
           })
