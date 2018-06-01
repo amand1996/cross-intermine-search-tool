@@ -238,7 +238,8 @@
                               </v-list-tile-avatar>
                               <v-list-tile-content>
                                 <v-list-tile-title>
-                                  <strong>ID - {{ mineResults.id }}</strong>
+                                  <strong>ID - {{ mineResults.id }} | </strong>
+                                  <small>Relevance Score </small>
                                   <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
                                     <v-icon color="yellow" :key="searchPoints + '_active'">star</v-icon>
                                   </template>
@@ -253,8 +254,14 @@
                                 </v-list-tile-sub-title>
                               </v-list-tile-content>
                               <v-list-tile-action>
-                                <v-btn icon ripple>
-                                  <v-icon color="grey lighten-1">info</v-icon>
+                                <v-btn
+                                  icon
+                                  ripple
+                                  target="_blank"
+                                  color="orange lighten-2"
+                                  :href="generateReportLink(mineResults.id, selectedMine.url)"
+                                >
+                                  <v-icon color="white">open_in_new</v-icon>
                                 </v-btn>
                               </v-list-tile-action>
                             </v-list-tile>
@@ -309,11 +316,17 @@
                         dark
                         >
                           <v-card-title primary-title>
-                            <v-btn icon ripple>
-                              <v-icon color="white">info</v-icon>
+                            <v-btn
+                              icon
+                              ripple
+                              target="_blank"
+                              :href="generateReportLink(mineResults.id, selectedMine.url)"
+                            >
+                              <v-icon color="white">open_in_new</v-icon>
                             </v-btn>
-                            <div class="headline"><strong>ID - {{ mineResults.id }}</strong></div>
-                            <v-card-actions>  
+                            <div class="headline"><strong>ID - {{ mineResults.id }}</strong> | </div>
+                            <v-card-actions>
+                              <small>Relevance Score </small>
                               <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
                                 <v-icon color="yellow" :key="searchPoints + '_active'">star</v-icon>
                               </template>
@@ -323,7 +336,7 @@
                             </v-card-actions>
                             <v-card-text>
                               <template v-for="(mineResultsField, key, j) in mineResults.fields">
-                                  <span :key="j"><strong> {{ key.toUpperCase() }}</strong> - {{ mineResultsField }}</span><br>
+                                  <span :key="j">|<strong> {{ key.toUpperCase() }}</strong> - {{ mineResultsField }} </span>
                               </template>
                             </v-card-text>
                           </v-card-title>
@@ -401,6 +414,9 @@
       },
       calculateSearchPoints (score) {
         return Math.round(Math.max(0.1, Math.min(1, score)) * 5)
+      },
+      generateReportLink (id, url) {
+        return url + '/report.do?id=' + id
       }
     },
     props: {
