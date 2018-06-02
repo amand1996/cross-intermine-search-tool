@@ -471,6 +471,8 @@
         switch (dataType) {
           case 'Gene': return 'green lighten-1'
           case 'Protein': return 'amber lighten-1'
+          case 'ProteinDomain': return 'red lighten-1'
+          case 'OntologyTerm': return 'indigo lighten-1'
           case 'Publication': return 'cyan lighten-1'
           case 'Organism': return 'pink lighten-1'
           case 'Interaction': return 'orange lighten-1'
