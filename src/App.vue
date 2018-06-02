@@ -274,13 +274,13 @@
                           </template>
 
                           <template v-else>
-                            <v-list-tile v-for="(mineResults, i) in filterResults(selectedMine.result.results)" :key="i" avatar @click="">
+                            <v-list-tile v-for="(mineResults, i) in filterResults(selectedMine.result.results)" :key="i" avatar @click="" :color="selectColor(mineResults.type)">
                               <v-list-tile-avatar>
                                 <strong>{{ i+1 }}</strong>
                               </v-list-tile-avatar>
                               <v-list-tile-content>
                                 <v-list-tile-title>
-                                  <strong>ID - {{ mineResults.id }} | </strong>
+                                  <strong>Type - {{ mineResults.type }} | </strong>
                                   <small>Relevance Score </small>
                                   <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
                                     <v-icon color="yellow" :key="searchPoints + '_active'">star</v-icon>
@@ -291,7 +291,7 @@
                                 </v-list-tile-title>
                                 <v-list-tile-sub-title>
                                   <template v-for="(mineResultsField, key, j) in mineResults.fields">
-                                    <span :key="j"><strong>{{ key.toUpperCase() }}</strong> - {{ mineResultsField }} | </span>
+                                    <span :key="j"><strong>| {{ key.toUpperCase() }}</strong> - {{ mineResultsField }} </span>
                                   </template>
                                 </v-list-tile-sub-title>
                               </v-list-tile-content>
@@ -353,7 +353,7 @@
                     <v-flex xs12 v-for="(mineResults, i) in filterResults(selectedMine.result.results)"
                         :key="i">
                       <v-card
-                        color="green lighten-1"
+                        :color="selectColor(mineResults.type)"
                         hover
                         dark
                         >
@@ -366,7 +366,7 @@
                             >
                               <v-icon color="white">open_in_new</v-icon>
                             </v-btn>
-                            <div class="headline"><strong>ID - {{ mineResults.id }}</strong> | </div>
+                            <div class="headline"><strong>Type - {{ mineResults.type }}</strong> | </div>
                             <v-card-actions>
                               <small>Relevance Score </small>
                               <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
@@ -466,6 +466,17 @@
         return data.filter((resultItem) => {
           return vm.calculateSearchPoints(resultItem.relevance) >= vm.scoreFilter
         })
+      },
+      selectColor (dataType) {
+        switch (dataType) {
+          case 'Gene': return 'green lighten-1'
+          case 'Protein': return 'amber lighten-1'
+          case 'Publication': return 'cyan lighten-1'
+          case 'Organism': return 'pink lighten-1'
+          case 'Interaction': return 'orange lighten-1'
+          case 'GO': return 'deep-purple lighten-1'
+          default: return 'blue-grey lighten-1'
+        }
       }
     },
     props: {
