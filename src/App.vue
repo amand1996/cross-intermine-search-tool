@@ -171,28 +171,25 @@
       app
       fixed
     >
-      <v-toolbar-title style="width: 350px" class="ml-0 pl-3">
+      <v-toolbar-title style="width: 18em" class="ml-0 pl-3" id="app_title">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <span class="hidden-sm-and-down">Cross Intermine Search Tool</span>
       </v-toolbar-title>
-      <v-text-field
-        flat
-        solo-inverted
-        prepend-icon="search"
-        label="Search"
-        class="hidden-sm-and-down"
-        @keyup.enter="searchMine"
-        v-model="searchTerm"
-      ></v-text-field>
+      <v-layout row align-center style="max-width: 650px">
+        <v-text-field
+          single-line
+          hide-details
+          flat
+          solo-inverted
+          prepend-icon="search"
+          label="Search"
+          @keyup.enter="searchMine"
+          v-model="searchTerm"
+        ></v-text-field>
+      </v-layout>
       <v-spacer></v-spacer>
-      <v-btn icon>
-        <v-icon>apps</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <v-icon>notifications</v-icon>
-      </v-btn>
       <v-btn icon large>
-        <v-avatar size="32px" tile>
+        <v-avatar size="2em" tile>
           <img
             src="@/assets/logo.png"
             alt="IM"
@@ -497,3 +494,11 @@
     }
   }
 </script>
+
+<style>
+  @media screen and (max-width: 600px) {
+    #app_title {
+      width: 0em;
+    }
+  }
+</style>
