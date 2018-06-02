@@ -474,7 +474,7 @@
           case 'Publication': return 'cyan lighten-1'
           case 'Organism': return 'pink lighten-1'
           case 'Interaction': return 'orange lighten-1'
-          case 'GO': return 'deep-purple lighten-1'
+          case 'GOTerm': return 'deep-purple lighten-1'
           default: return 'blue-grey lighten-1'
         }
       }
