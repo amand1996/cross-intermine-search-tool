@@ -462,6 +462,7 @@
       },
       filterResults (data) {
         let vm = this
+        if (!Array.isArray(data)) return data
         return data.filter((resultItem) => {
           return vm.calculateSearchPoints(resultItem.relevance) >= vm.scoreFilter
         })
