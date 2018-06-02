@@ -78,6 +78,48 @@
               </v-list-tile-content>
             </v-list-tile>
 
+            <v-radio-group v-model="scoreFilter" @change="filterResults">
+              <v-list-tile>
+                <v-list-tile-action>
+                  <v-icon color="yellow">star</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    Relevance Score
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    <v-radio color="orange" label="4+ stars" value="4" ></v-radio>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    <v-radio color="orange" label="3+ stars" value="3" ></v-radio>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    <v-radio color="orange" label="2+ stars" value="2" ></v-radio>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    <v-radio color="orange" label="1+ stars" value="1" ></v-radio>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-radio-group>
+
             <v-list-tile
               v-for="(child, i) in filters.children"
               :key="i"
@@ -227,12 +269,12 @@
                           <template v-if="selectedMine.result == undefined">
                             <h3 style="text-align: center;">Please search using a keyword.</h3>
                           </template>
-                          <template v-else-if="selectedMine.result.results.length == 0">
+                          <template v-else-if="filterResults(selectedMine.result.results).length == 0">
                             <h3 style="text-align: center;">No results found.</h3>
                           </template>
 
                           <template v-else>
-                            <v-list-tile v-for="(mineResults, i) in selectedMine.result.results" :key="i" avatar @click="">
+                            <v-list-tile v-for="(mineResults, i) in filterResults(selectedMine.result.results)" :key="i" avatar @click="">
                               <v-list-tile-avatar>
                                 <strong>{{ i+1 }}</strong>
                               </v-list-tile-avatar>
@@ -296,7 +338,7 @@
             <template v-if="selectedMine.result == undefined">
               <h3 style="text-align: center;">Please search using a keyword.</h3>
             </template>
-            <template v-else-if="selectedMine.result.results.length == 0">
+            <template v-else-if="filterResults(selectedMine.result.results).length == 0">
               <h3 style="text-align: center;">No results found.</h3>
             </template>
 
@@ -308,7 +350,7 @@
                   grid-list-lg
                 >
                   <v-layout row wrap>
-                    <v-flex xs12 v-for="(mineResults, i) in selectedMine.result.results"
+                    <v-flex xs12 v-for="(mineResults, i) in filterResults(selectedMine.result.results)"
                         :key="i">
                       <v-card
                         color="green lighten-1"
@@ -377,14 +419,14 @@
         icon: 'keyboard_arrow_up',
         'icon-alt': 'keyboard_arrow_down',
         text: 'Filters',
-        model: false,
+        model: true,
         children: [
           {'text': 'Plants'}
         ]
       },
+      scoreFilter: '1',
       selected: [],
-      selectedFilters: [],
-      result: ''
+      selectedFilters: []
     }),
     methods: {
       searchMine () {
@@ -417,6 +459,12 @@
       },
       generateReportLink (id, url) {
         return url + '/report.do?id=' + id
+      },
+      filterResults (data) {
+        let vm = this
+        return data.filter((resultItem) => {
+          return vm.calculateSearchPoints(resultItem.relevance) >= vm.scoreFilter
+        })
       }
     },
     props: {
