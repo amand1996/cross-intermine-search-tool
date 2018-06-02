@@ -347,6 +347,28 @@
                   grid-list-lg
                 >
                   <v-layout row wrap>
+                    <v-flex xs12>
+                      <v-card
+                        color="blue-grey lighten-3"
+                        dark
+                        flat
+                        >
+                          <v-card-title primary-title>
+                            <v-icon color="white">info</v-icon>
+                            <v-card-text>
+                              <strong style="text-decoration: underline;">CATEGORY - </strong>
+                              <p><template v-for="(item, key, j) in selectedMine.result.facets.Category">
+                                  <span :key="j" style="font-style: italic;"> <strong> {{ key }}</strong> - {{ item }} |</span>
+                              </template></p>
+                              <strong style="text-decoration: underline;">ORGANISM.SHORTNAME - </strong>
+                              <p><template v-for="(item, key, j) in selectedMine.result.facets['organism.shortName']">
+                                  <span :key="j" style="font-style: italic;"> <strong> {{ key }}</strong> - {{ item }} |</span>
+                              </template></p>
+                            </v-card-text>
+                          </v-card-title>
+                        </v-card>
+                    </v-flex>
+
                     <v-flex xs12 v-for="(mineResults, i) in filterResults(selectedMine.result.results)"
                         :key="i">
                       <v-card
