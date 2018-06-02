@@ -483,7 +483,7 @@
       source: String
     },
     created () {
-      axios.get(`http://registry.intermine.org/service/instances`)
+      axios.get(`https://registry.intermine.org/service/instances`)
       .then(response => {
         response.data.instances.map((mine) => {
           this.selectIntermines.children.push({
