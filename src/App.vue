@@ -65,7 +65,7 @@
             </v-list-tile>
           </v-list-group>
 
-          <v-list-group
+          <!-- <v-list-group
             v-model="filters.model"
             :prepend-icon="filters.model ? filters.icon : filters['icon-alt']"
             append-icon=""
@@ -78,64 +78,84 @@
               </v-list-tile-content>
             </v-list-tile>
 
-            <v-radio-group v-model="scoreFilter" @change="filterResults">
-              <v-list-tile>
-                <v-list-tile-action>
-                  <v-icon color="yellow">star</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>
-                    Relevance Score
-                  </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+            
+          </v-list-group> -->
+          <v-list-tile v-if="category.length != 0">
+            <v-list-tile-action>
+              <v-icon>view_list</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Category Filter
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          
+          <v-list-tile
+            v-if="category.length != 0"
+            v-for="(categoryItem, i) in category"
+            :key="i"
+            @click=""
+          >
+            <v-list-tile-action>
+            </v-list-tile-action>
+            
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <v-checkbox v-model="categoryFilters" :label="categoryItem" color="success" :value="categoryItem"></v-checkbox>
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
 
-              <v-list-tile>
-                <v-list-tile-content>
-                  <v-list-tile-title>
-                    <v-radio color="orange" label="4+ stars" value="4" ></v-radio>
-                  </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-content>
-                  <v-list-tile-title>
-                    <v-radio color="orange" label="3+ stars" value="3" ></v-radio>
-                  </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-content>
-                  <v-list-tile-title>
-                    <v-radio color="orange" label="2+ stars" value="2" ></v-radio>
-                  </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-content>
-                  <v-list-tile-title>
-                    <v-radio color="orange" label="1+ stars" value="1" ></v-radio>
-                  </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-radio-group>
-
-            <v-list-tile
-              v-for="(child, i) in filters.children"
-              :key="i"
-              @click=""
-            >
-              <v-list-tile-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
+          <v-radio-group v-model="scoreFilter" @change="filterResults">
+            <v-list-tile>
+              <v-list-tile-action>
+                <v-icon color="yellow">star</v-icon>
               </v-list-tile-action>
-              
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-checkbox v-model="selectedFilters" :label="child.text" color="success" :value="child"></v-checkbox>
+                  Relevance Score
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-          </v-list-group>
+
+            <v-list-tile>
+              <v-list-tile-action>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-radio color="orange" label="4+ stars" value="4" ></v-radio>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-action>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-radio color="orange" label="3+ stars" value="3" ></v-radio>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-action>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-radio color="orange" label="2+ stars" value="2" ></v-radio>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-action>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  <v-radio color="orange" label="1+ stars" value="1" ></v-radio>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-radio-group>
 
           <v-list-tile @click="">
             <v-list-tile-action>
@@ -365,6 +385,7 @@
                                   <span :key="j" style="font-style: italic;"> <strong> {{ key }}</strong> - {{ item }} |</span>
                               </template></p>
                             </v-card-text>
+                            <small>*This info is for unfiltered results of the searched keyword.</small>
                           </v-card-title>
                         </v-card>
                     </v-flex>
@@ -445,11 +466,16 @@
       },
       scoreFilter: '1',
       selected: [],
-      selectedFilters: []
+      selectedFilters: [],
+      category: [],
+      categoryFilters: []
     }),
     methods: {
       searchMine () {
         let vm = this
+        vm.selectIntermines.model = false
+        vm.category = []
+        vm.categoryFilters = []
         vm.selected.map((mineObj) => {
           let mineService = new intermine.Service({root: mineObj.url})
           let options = {
@@ -459,6 +485,7 @@
           }
           mineService.search(options).then((data) => {
             mineObj.result = data
+            vm.pushToCategoryList(data.facets.Category)
             vm.$forceUpdate()
           })
         })
@@ -483,7 +510,7 @@
         let vm = this
         if (!Array.isArray(data)) return data
         return data.filter((resultItem) => {
-          return vm.calculateSearchPoints(resultItem.relevance) >= vm.scoreFilter
+          return (vm.calculateSearchPoints(resultItem.relevance) >= vm.scoreFilter) && (vm.categoryFilters.indexOf(resultItem.type) >= 0)
         })
       },
       selectColor (dataType) {
@@ -498,6 +525,18 @@
           case 'GOTerm': return 'deep-purple lighten-1'
           default: return 'blue-grey lighten-1'
         }
+      },
+      pushToCategoryList (categoryObj) {
+        let vm = this
+        let categoryArray = Object.keys(categoryObj)
+        categoryArray.forEach((item) => {
+          if (vm.category.indexOf(item) < 0) {
+            vm.category.push(item)
+          }
+          if (vm.categoryFilters.indexOf(item) < 0) {
+            vm.categoryFilters.push(item)
+          }
+        })
       }
     },
     props: {
