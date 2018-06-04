@@ -34,6 +34,7 @@
 
             <v-list-tile @click="selectAll">
               <v-list-tile-action>
+                <v-icon>done_all</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -44,6 +45,7 @@
             
             <v-list-tile @click="selectNone">
               <v-list-tile-action>
+                <v-icon>filter_none</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -226,6 +228,7 @@
         color="teal darken-1"
         show-arrows
         grow
+        v-model="tabModal"
       >
         <v-tabs-slider color="yellow"></v-tabs-slider>
         <v-tab v-if="this.selected.length == 0" disabled>
@@ -447,7 +450,7 @@
     data: () => ({
       dialog: false,
       drawer: null,
-      tab: null,
+      tabModal: null,
       errors: [],
       searchTerm: '',
       text: '',
@@ -476,6 +479,7 @@
     methods: {
       searchMine () {
         let vm = this
+        vm.tabModal = 'tab-all'
         vm.selectIntermines.model = false
         vm.category = []
         vm.categoryFilters = []
