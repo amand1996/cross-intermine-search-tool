@@ -33,6 +33,8 @@
             </v-list-tile>
 
             <v-list-tile @click="selectAll">
+              <v-list-tile-action>
+              </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
                   Select All
@@ -41,6 +43,8 @@
             </v-list-tile>
             
             <v-list-tile @click="selectNone">
+              <v-list-tile-action>
+              </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
                   Select None
@@ -53,8 +57,7 @@
               :key="i"
               @click=""
             >
-              <v-list-tile-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
+              <v-list-tile-action>
               </v-list-tile-action>
               
               <v-list-tile-content>
