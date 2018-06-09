@@ -226,50 +226,58 @@
       <v-tabs
         dark
         color="teal darken-1"
-        show-arrows
         grow
         v-model="tabModal"
       >
         <v-tabs-slider color="yellow"></v-tabs-slider>
-        <v-tab v-if="this.selected.length == 0" disabled>
-          Please select an Intermine
-        </v-tab>
-
-        <template v-else>
+        
+        <template>
           <v-tab
-            :href="'#tab-all'"
+            :href="'#tab-home'"
             :ripple="false"
-          >
-            All Mines
+            >
+            Home
           </v-tab>
           <v-tab
-            v-for="(selectedMine, i) in this.selected"
-            :key="i"
-            :href="'#tab-' + i"
+            :href="'#tab-results'"
             :ripple="false"
+            v-if="searchActive"
           >
-            {{ selectedMine.text }}
+            Results
           </v-tab>
         </template>
         
         <v-tabs-items fixed>
           <v-tab-item
-            :id="'tab-all'"
+            :id="'tab-home'"
           >
-            <v-card>
-              <v-toolbar
-               color="teal lighten-1"
-               dark
-               height=50
-              >
-                <v-toolbar-title>Search Results for <strong>All Mines</strong></v-toolbar-title>
-                <v-spacer></v-spacer>
-              </v-toolbar>
-            </v-card>
+            <template>
+              <v-card>
+                <v-container
+                  fluid
+                  style="min-height: 0;"
+                  grid-list-lg
+                >
+                  <v-layout row>
+                    <v-flex xs12>
+                      <v-toolbar color="green darken-1" dark flat>
+                          <v-toolbar-title>Welcome to InterMine</v-toolbar-title>
+                          <v-spacer></v-spacer>
+                      </v-toolbar>
+                      <v-card height="300" style="overflow-y: auto;">
 
-            <!-- <template v-if="selectedMine.result == undefined">
-              No results
-            </template> -->
+                      </v-card>
+                    </v-flex>
+                  </v-layout>
+                  <br>
+                </v-container>
+              </v-card>
+            </template>
+
+          </v-tab-item>
+          <v-tab-item
+            :id="'tab-results'"
+          >
 
             <template>
               <v-card
@@ -343,101 +351,6 @@
             </template>
 
           </v-tab-item>
-
-          <v-tab-item
-            v-for="(selectedMine, i) in this.selected"
-            :key="i"
-            :id="'tab-' + i"
-          >
-            <v-card>
-              <v-toolbar
-               color="teal lighten-1"
-               dark
-               height=50
-              >
-                <v-toolbar-title>Search Results for <strong>{{ selectedMine.text }}</strong></v-toolbar-title>
-                <v-spacer></v-spacer>
-              </v-toolbar>
-            </v-card>
-
-            <template v-if="selectedMine.result == undefined">
-              <h3 style="text-align: center;">Please search using a keyword.</h3>
-            </template>
-            <template v-else-if="filterResults(selectedMine.result.results).length == 0">
-              <h3 style="text-align: center;">No results found.</h3>
-            </template>
-
-            <template v-else>
-              <v-card>
-                <v-container
-                  fluid
-                  style="min-height: 0;"
-                  grid-list-lg
-                >
-                  <v-layout row wrap>
-                    <v-flex xs12>
-                      <v-card
-                        color="blue-grey lighten-3"
-                        dark
-                        flat
-                        >
-                          <v-card-title primary-title>
-                            <v-icon color="white">info</v-icon>
-                            <v-card-text>
-                              <strong style="text-decoration: underline;">CATEGORY - </strong>
-                              <p><template v-for="(item, key, j) in selectedMine.result.facets.Category">
-                                  <span :key="j" style="font-style: italic;"> <strong> {{ key }}</strong> - {{ item }} |</span>
-                              </template></p>
-                              <strong style="text-decoration: underline;">ORGANISM.SHORTNAME - </strong>
-                              <p><template v-for="(item, key, j) in selectedMine.result.facets['organism.shortName']">
-                                  <span :key="j" style="font-style: italic;"> <strong> {{ key }}</strong> - {{ item }} |</span>
-                              </template></p>
-                            </v-card-text>
-                            <small>*This info is for unfiltered results of the searched keyword.</small>
-                          </v-card-title>
-                        </v-card>
-                    </v-flex>
-
-                    <v-flex xs12 v-for="(mineResults, i) in filterResults(selectedMine.result.results)"
-                        :key="i">
-                      <v-card
-                        :color="selectColor(mineResults.type)"
-                        hover
-                        dark
-                        >
-                          <v-card-title primary-title>
-                            <v-btn
-                              icon
-                              ripple
-                              target="_blank"
-                              :href="generateReportLink(mineResults.id, selectedMine.url)"
-                            >
-                              <v-icon color="white">open_in_new</v-icon>
-                            </v-btn>
-                            <div class="headline"><strong>Type - {{ mineResults.type }}</strong> | </div>
-                            <v-card-actions>
-                              <small>Relevance Score </small>
-                              <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
-                                <v-icon color="yellow" :key="searchPoints + '_active'">star</v-icon>
-                              </template>
-                              <template v-for="searchPoints in (5 - calculateSearchPoints(mineResults.relevance))">
-                                <v-icon color="white" :key="searchPoints + '_inactive'">star</v-icon>
-                              </template>
-                            </v-card-actions>
-                            <v-card-text>
-                              <template v-for="(mineResultsField, key, j) in mineResults.fields">
-                                  <span :key="j">|<strong> {{ key.toUpperCase() }}</strong> - {{ mineResultsField }} </span>
-                              </template>
-                            </v-card-text>
-                          </v-card-title>
-                        </v-card>
-                    </v-flex>
-                  </v-layout>
-                </v-container>
-              </v-card>
-            </template>
-
-          </v-tab-item>
         </v-tabs-items>
       </v-tabs>
     </v-content>
@@ -452,7 +365,7 @@
     data: () => ({
       dialog: false,
       drawer: null,
-      tabModal: null,
+      tabModal: 'tab-home',
       errors: [],
       searchTerm: '',
       text: '',
@@ -476,15 +389,17 @@
       selected: [],
       selectedFilters: [],
       category: [],
-      categoryFilters: []
+      categoryFilters: [],
+      searchActive: false
     }),
     methods: {
       searchMine () {
         let vm = this
-        if (vm.searchTerm.trim() === '') {
+        if (vm.searchTerm.trim() === '' || vm.selected.length === 0) {
           return
         }
-        vm.tabModal = 'tab-all'
+        vm.searchActive = true
+        vm.tabModal = 'tab-results'
         vm.selectIntermines.model = false
         vm.category = []
         vm.categoryFilters = []
