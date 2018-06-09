@@ -64,7 +64,7 @@
               
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-checkbox v-model="selected" :label="child.text" color="success" :value="child"></v-checkbox>
+                  <v-checkbox :ripple="false" v-model="selected" :label="child.text" color="success" :value="child"></v-checkbox>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -107,7 +107,7 @@
             
             <v-list-tile-content>
               <v-list-tile-title>
-                <v-checkbox v-model="categoryFilters" :label="categoryItem" color="success" :value="categoryItem"></v-checkbox>
+                <v-checkbox :ripple="false" v-model="categoryFilters" :label="categoryItem" color="success" :value="categoryItem"></v-checkbox>
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -129,7 +129,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio color="orange" label="4+ stars" value="4" ></v-radio>
+                  <v-radio :ripple="false" color="orange" label="4+ stars" value="4" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -138,7 +138,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio color="orange" label="3+ stars" value="3" ></v-radio>
+                  <v-radio :ripple="false" color="orange" label="3+ stars" value="3" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -147,7 +147,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio color="orange" label="2+ stars" value="2" ></v-radio>
+                  <v-radio :ripple="false" color="orange" label="2+ stars" value="2" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -156,7 +156,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio color="orange" label="1+ stars" value="1" ></v-radio>
+                  <v-radio :ripple="false" color="orange" label="1+ stars" value="1" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -238,6 +238,7 @@
         <template v-else>
           <v-tab
             :href="'#tab-all'"
+            :ripple="false"
           >
             All Mines
           </v-tab>
@@ -245,6 +246,7 @@
             v-for="(selectedMine, i) in this.selected"
             :key="i"
             :href="'#tab-' + i"
+            :ripple="false"
           >
             {{ selectedMine.text }}
           </v-tab>
@@ -479,6 +481,9 @@
     methods: {
       searchMine () {
         let vm = this
+        if (vm.searchTerm.trim() === '') {
+          return
+        }
         vm.tabModal = 'tab-all'
         vm.selectIntermines.model = false
         vm.category = []
