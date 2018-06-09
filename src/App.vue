@@ -70,21 +70,6 @@
             </v-list-tile>
           </v-list-group>
 
-          <!-- <v-list-group
-            v-model="filters.model"
-            :prepend-icon="filters.model ? filters.icon : filters['icon-alt']"
-            append-icon=""
-          >
-            <v-list-tile slot="activator">
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ filters.text }}
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-
-            
-          </v-list-group> -->
           <v-list-tile v-if="category.length != 0">
             <v-list-tile-action>
               <v-icon>view_list</v-icon>
@@ -292,22 +277,35 @@
                   <v-layout row>
                     <v-flex xs12>
                       <v-toolbar color="green darken-1" dark flat>
-                          <v-toolbar-title>{{ selectedMine.text }}</v-toolbar-title>
+                          <v-toolbar-title>{{ selectedMine.text }} </v-toolbar-title>
                           <v-spacer></v-spacer>
+                          <span v-if="selectedMine.result != undefined && selectedMine.result.totalHits != undefined">
+                             <strong>
+                               <small>
+                                (Total hits : {{ selectedMine.result.totalHits }})
+                              </small>
+                             </strong>
+                          </span>
                       </v-toolbar>
                       <v-card height="300" style="overflow-y: auto;">
                         
                         <v-list three-line subheader>
                           
                           <template v-if="selectedMine.result == undefined">
-                            <h3 style="text-align: center;">Please search using a keyword.</h3>
+                            <h3 style="text-align: center;">Loading...</h3>
                           </template>
                           <template v-else-if="filterResults(selectedMine.result.results).length == 0">
                             <h3 style="text-align: center;">No results found.</h3>
                           </template>
 
                           <template v-else>
-                            <v-list-tile v-for="(mineResults, i) in filterResults(selectedMine.result.results)" :key="i" avatar @click="" :color="selectColor(mineResults.type)">
+                            <v-list-tile
+                              v-for="(mineResults, i) in filterResults(selectedMine.result.results)"
+                              :key="i"
+                              avatar
+                              @click=""
+                              :style="{ color: selectColor(mineResults.type)}"
+                            >
                               <v-list-tile-avatar>
                                 <strong>{{ i+1 }}</strong>
                               </v-list-tile-avatar>
@@ -442,15 +440,34 @@
       },
       selectColor (dataType) {
         switch (dataType) {
-          case 'Gene': return 'green lighten-1'
-          case 'Protein': return 'amber lighten-1'
-          case 'ProteinDomain': return 'red lighten-1'
-          case 'OntologyTerm': return 'indigo lighten-1'
-          case 'Publication': return 'cyan lighten-1'
-          case 'Organism': return 'pink lighten-1'
-          case 'Interaction': return 'orange lighten-1'
-          case 'GOTerm': return 'deep-purple lighten-1'
-          default: return 'blue-grey lighten-1'
+          case 'Genes':
+          case 'Genomics':
+          case 'genes':
+          case 'gene':
+          case 'homologues':
+          case 'Homologue':
+          case 'Homology':
+          case 'Genome':
+          case 'Gene': return '#8BC34A'
+          case 'Proteins':
+          case 'proteins':
+          case 'ProteinDomain':
+          case 'Protein': return '#FFC107'
+          case 'publications':
+          case 'Author':
+          case 'Literature':
+          case 'Publication': return '#2196F3'
+          case 'Organism': return '#E91E63'
+          case 'interactions':
+          case 'InteractionTerm':
+          case 'InteractionExperiment':
+          case 'Complex':
+          case 'Interactions':
+          case 'Interaction': return '#FF5722'
+          case 'GOTerm':
+          case 'goAnnotation':
+          case 'GOAnnotation': return '#9C27B0'
+          default: return '#cccccc'
         }
       },
       pushToCategoryList (categoryObj) {
