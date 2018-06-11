@@ -364,12 +364,12 @@
                               <v-list-tile-content>
                                 <v-list-tile-title>
                                   <strong>Type - {{ mineResults.type }} | </strong>
-                                  <small>Relevance Score </small>
+                                  <small><strong>Relevance Score </strong></small>
                                   <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
-                                    <v-icon color="yellow" :key="searchPoints + '_active'">star</v-icon>
+                                    <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
                                   </template>
                                   <template v-for="searchPoints in (5 - calculateSearchPoints(mineResults.relevance))">
-                                    <v-icon color="white" :key="searchPoints + '_inactive'">star</v-icon>
+                                    <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">lens</v-icon>
                                   </template>
                                 </v-list-tile-title>
                                 <v-list-tile-sub-title>
@@ -390,6 +390,11 @@
                                 </v-btn>
                               </v-list-tile-action>
                             </v-list-tile>
+                            <template v-if="selectedMine.result.totalHits != undefined && selectedMine.result.totalHits > 100">
+                              <h3 style="text-align: center; cursor: pointer;">
+                                Load more
+                              </h3>
+                            </template>
                           </template>
                         </v-list>
                       </v-card>
