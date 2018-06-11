@@ -306,6 +306,9 @@
           >
 
             <template>
+              <v-alert v-if="window.location.protocol === 'https:'" :value="true" type="warning">
+                You're currently viewing the HTTPS website. Due to security limitations, we are unable to show results from HTTP-only InterMines. You may be able to see more results if you reload this site via HTTP.
+              </v-alert>
               <v-alert v-if="this.failedSearchMines.length != 0" :value="true" type="error">
                 Something went wrong in the following mine(s): <span v-for="errorMine in this.failedSearchMines" :key="errorMine"> {{ errorMine }} /</span>
               </v-alert>
