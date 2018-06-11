@@ -79,6 +79,7 @@
             <v-list-tile
               v-for="(child, i) in selectIntermines.children"
               :key="i"
+              @click=""
             >
               <v-list-tile-action>
               </v-list-tile-action>
@@ -273,22 +274,21 @@
                   >
                     <v-layout row wrap>
                       <v-flex xs12>
-                        <v-card color="green darken-1" dark raised height="200">
+                        <v-card color="green darken-1" dark raised height="100%">
                           <v-container fluid grid-list-lg>
                             <v-layout row>
-                              <v-flex xs7>
+                              <v-flex>
+                                <v-card-media
+                                  src="https://cdn.rawgit.com/intermine/design-materials/f5f00be4/logos/intermine/intermine.png"
+                                  height="4em"
+                                  contain
+                                ></v-card-media>
+                                <br>
                                 <div>
                                   <h1>Cross Intermine Search Tool</h1><br>
                                   <p style="font-size: larger;">Select the Intermines you are interested in; and type a search keyword or symbol into the searchbar up the top and hit enter.
                                     If you're not sure what Intermines to choose or what to search, check out the results for <span class="example" @click="exampleSearch('adh')">ADH</span>, <span class="example" @click="exampleSearch('brca1')">BRCA1</span> or <span class="example" @click="exampleSearch('gata1')">GATA1</span></p>
                                 </div>
-                              </v-flex>
-                              <v-flex xs5>
-                                <v-card-media
-                                  src="https://cdn.rawgit.com/intermine/design-materials/f5f00be4/logos/intermine/intermine.png"
-                                  height="125px"
-                                  contain
-                                ></v-card-media>
                               </v-flex>
                             </v-layout>
                           </v-container>
