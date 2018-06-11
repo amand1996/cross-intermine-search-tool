@@ -34,7 +34,7 @@
 
             <v-list-tile @click="selectAll">
               <v-list-tile-action>
-                <v-icon>done_all</v-icon>
+                <v-icon color="teal">done_all</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -45,7 +45,7 @@
             
             <v-list-tile @click="selectNone">
               <v-list-tile-action>
-                <v-icon>filter_none</v-icon>
+                <v-icon color="teal">filter_none</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -54,10 +54,31 @@
               </v-list-tile-content>
             </v-list-tile>
 
+            <v-list-tile @click="changeNeighbourhood('MODs')">
+              <v-list-tile-action>
+                <v-icon color="red">image_search</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  Only MODs
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
+            <v-list-tile @click="changeNeighbourhood('Plants')">
+              <v-list-tile-action>
+                <v-icon color="green">image_search</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>
+                  Only Plants
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
             <v-list-tile
               v-for="(child, i) in selectIntermines.children"
               :key="i"
-              @click=""
             >
               <v-list-tile-action>
               </v-list-tile-action>
@@ -434,6 +455,7 @@
         vm.category = []
         vm.categoryFilters = []
         vm.selected.map((mineObj) => {
+          mineObj.result = undefined
           let mineService = new intermine.Service({root: mineObj.url})
           let options = {
             q: vm.searchTerm
@@ -529,6 +551,15 @@
         this.searchTerm = term
         this.selectAll()
         this.searchMine()
+      },
+      changeNeighbourhood (neighbourhood) {
+        let vm = this
+        vm.selected = []
+        vm.selectIntermines.children.map((item) => {
+          if (item.neighbourhood.indexOf(neighbourhood) >= 0) {
+            vm.selected.push(item)
+          }
+        })
       }
     },
     props: {
@@ -540,7 +571,8 @@
         response.data.instances.map((mine) => {
           this.selectIntermines.children.push({
             text: mine.name,
-            url: mine.url
+            url: mine.url,
+            neighbourhood: mine.neighbours
           })
         })
       })
