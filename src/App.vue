@@ -307,7 +307,7 @@
 
             <template>
               <v-alert v-if="this.protocol === 'https:'" :value="true" type="warning">
-                You're currently viewing the HTTPS website. Due to security limitations, we are unable to show results from HTTP-only InterMines. You may be able to see more results if you reload this site via HTTP.
+                You're currently viewing the HTTPS website. Due to security limitations, we are unable to show results from HTTP-only InterMines. You may be able to see more results if you reload this site via HTTP - [<a style="color: inherit;" :href="`http://${this.host}`">{{ `http://${this.host}` }}</a>].
               </v-alert>
               <v-alert v-if="this.failedSearchMines.length != 0" :value="true" type="error">
                 Something went wrong in the following mine(s): <span v-for="errorMine in this.failedSearchMines" :key="errorMine"> {{ errorMine }} /</span>
@@ -324,7 +324,7 @@
                   fluid
                   style="min-height: 0;"
                   grid-list-lg
-                  v-if="emptyResultMines.indexOf(selectedMine.text) < 0 && failedSearchMines.indexOf(selectedMine.text) < 0"
+                  v-if="emptyResultMines.indexOf(selectedMine.text) < 0 && failedSearchMines.indexOf(selectedMine.text) < 0 && selectedMine.result != undefined"
                 >
                   <v-layout row>
                     <v-flex xs12>
@@ -443,7 +443,8 @@
       searchActive: false,
       emptyResultMines: [],
       failedSearchMines: [],
-      protocol: document.location.protocol
+      protocol: document.location.protocol,
+      host: document.location.host
     }),
     methods: {
       searchMine () {
