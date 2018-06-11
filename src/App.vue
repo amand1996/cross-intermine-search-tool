@@ -88,6 +88,7 @@
             @click=""
           >
             <v-list-tile-action>
+              <v-icon :style="{ color: selectColor(categoryItem)}">layers</v-icon>
             </v-list-tile-action>
             
             <v-list-tile-content>
@@ -236,27 +237,46 @@
           <v-tab-item
             :id="'tab-home'"
           >
+            
             <template>
-              <v-card>
-                <v-container
-                  fluid
-                  style="min-height: 0;"
-                  grid-list-lg
-                >
-                  <v-layout row>
-                    <v-flex xs12>
-                      <v-toolbar color="green darken-1" dark flat>
-                          <v-toolbar-title>Welcome to InterMine</v-toolbar-title>
-                          <v-spacer></v-spacer>
-                      </v-toolbar>
-                      <v-card height="300" style="overflow-y: auto;">
-
-                      </v-card>
-                    </v-flex>
-                  </v-layout>
-                  <br>
-                </v-container>
-              </v-card>
+              <div
+                id="e3"
+                style="margin: auto;"
+                class="grey lighten-3"
+              >
+                <v-card>
+                  <v-container
+                    fluid
+                    style="min-height: 0;"
+                    grid-list-lg
+                  >
+                    <v-layout row wrap>
+                      <v-flex xs12>
+                        <v-card color="green darken-1" dark raised height="200">
+                          <v-container fluid grid-list-lg>
+                            <v-layout row>
+                              <v-flex xs7>
+                                <div>
+                                  <h1>Cross Intermine Search Tool</h1><br>
+                                  <p style="font-size: larger;">Select the Intermines you are interested in; and type a search keyword or symbol into the searchbar up the top and hit enter.
+                                    If you're not sure what Intermines to choose or what to search, check out the results for <span class="example" @click="exampleSearch('adh')">ADH</span>, <span class="example" @click="exampleSearch('brca1')">BRCA1</span> or <span class="example" @click="exampleSearch('gata1')">GATA1</span></p>
+                                </div>
+                              </v-flex>
+                              <v-flex xs5>
+                                <v-card-media
+                                  src="https://cdn.rawgit.com/intermine/design-materials/f5f00be4/logos/intermine/intermine.png"
+                                  height="125px"
+                                  contain
+                                ></v-card-media>
+                              </v-flex>
+                            </v-layout>
+                          </v-container>
+                        </v-card>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card>
+              </div>
             </template>
 
           </v-tab-item>
@@ -265,6 +285,14 @@
           >
 
             <template>
+              <v-alert v-if="this.emptyResultMines.length != 0" :value="true" type="info">
+                Some mines didn't return results: <span v-for="emptyMine in this.emptyResultMines" :key="emptyMine"> {{ emptyMine }} /</span>
+              </v-alert>
+
+              <v-alert v-if="this.failedSearchMines.length != 0" :value="true" type="error">
+                Something went wrong in the following mine(s): <span v-for="errorMine in this.failedSearchMines" :key="errorMine"> {{ errorMine }} /</span>
+              </v-alert>
+
               <v-card
                 v-for="(selectedMine, i) in this.selected"
                 :key="i"
@@ -273,6 +301,7 @@
                   fluid
                   style="min-height: 0;"
                   grid-list-lg
+                  v-if="emptyResultMines.indexOf(selectedMine.text) < 0 && failedSearchMines.indexOf(selectedMine.text) < 0"
                 >
                   <v-layout row>
                     <v-flex xs12>
@@ -388,7 +417,9 @@
       selectedFilters: [],
       category: [],
       categoryFilters: [],
-      searchActive: false
+      searchActive: false,
+      emptyResultMines: [],
+      failedSearchMines: []
     }),
     methods: {
       searchMine () {
@@ -396,6 +427,8 @@
         if (vm.searchTerm.trim() === '' || vm.selected.length === 0) {
           return
         }
+        vm.failedSearchMines = []
+        vm.emptyResultMines = []
         vm.searchActive = true
         vm.tabModal = 'tab-results'
         vm.selectIntermines.model = false
@@ -409,8 +442,16 @@
             // start: 100
           }
           mineService.search(options).then((data) => {
-            mineObj.result = data
-            vm.pushToCategoryList(data.facets.Category)
+            console.log(data)
+            if (data !== undefined && data.wasSuccessful === true && data.statusCode === 200 && data.error === null) {
+              mineObj.result = data
+              if (data.results.length === 0) {
+                vm.emptyResultMines.push(mineObj.text)
+              }
+              vm.pushToCategoryList(data.facets.Category)
+            } else {
+              vm.failedSearchMines.push(mineObj.text)
+            }
             vm.$forceUpdate()
           })
         })
@@ -481,6 +522,11 @@
             vm.categoryFilters.push(item)
           }
         })
+      },
+      exampleSearch (term) {
+        this.searchTerm = term
+        this.selectAll()
+        this.searchMine()
       }
     },
     props: {
@@ -505,5 +551,12 @@
     #app_title {
       width: 0em;
     }
+  }
+
+  .example {
+    font-weight: bold;
+    font-style: italic;
+    cursor: pointer;
+    text-decoration: underline;
   }
 </style>
