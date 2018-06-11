@@ -285,12 +285,11 @@
           >
 
             <template>
-              <v-alert v-if="this.emptyResultMines.length != 0" :value="true" type="info">
-                Some mines didn't return results: <span v-for="emptyMine in this.emptyResultMines" :key="emptyMine"> {{ emptyMine }} /</span>
-              </v-alert>
-
               <v-alert v-if="this.failedSearchMines.length != 0" :value="true" type="error">
                 Something went wrong in the following mine(s): <span v-for="errorMine in this.failedSearchMines" :key="errorMine"> {{ errorMine }} /</span>
+              </v-alert>
+              <v-alert v-if="this.emptyResultMines.length != 0" :value="true" type="info">
+                Some mines didn't return results: <span v-for="emptyMine in this.emptyResultMines" :key="emptyMine"> {{ emptyMine }} /</span>
               </v-alert>
 
               <v-card
@@ -442,7 +441,6 @@
             // start: 100
           }
           mineService.search(options).then((data) => {
-            console.log(data)
             if (data !== undefined && data.wasSuccessful === true && data.statusCode === 200 && data.error === null) {
               mineObj.result = data
               if (data.results.length === 0) {
@@ -452,6 +450,10 @@
             } else {
               vm.failedSearchMines.push(mineObj.text)
             }
+            vm.$forceUpdate()
+          }, (errorText) => {
+            console.log(errorText)
+            vm.failedSearchMines.push(mineObj.text)
             vm.$forceUpdate()
           })
         })
