@@ -306,7 +306,7 @@
           >
 
             <template>
-              <v-alert v-if="window.location.protocol === 'https:'" :value="true" type="warning">
+              <v-alert v-if="this.protocol === 'https:'" :value="true" type="warning">
                 You're currently viewing the HTTPS website. Due to security limitations, we are unable to show results from HTTP-only InterMines. You may be able to see more results if you reload this site via HTTP.
               </v-alert>
               <v-alert v-if="this.failedSearchMines.length != 0" :value="true" type="error">
@@ -442,7 +442,8 @@
       categoryFilters: [],
       searchActive: false,
       emptyResultMines: [],
-      failedSearchMines: []
+      failedSearchMines: [],
+      protocol: document.location.protocol
     }),
     methods: {
       searchMine () {
