@@ -137,7 +137,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio :ripple="false" color="orange" label="4+ stars" value="4" ></v-radio>
+                  <v-radio :ripple="false" color="orange" label="4+ points" value="4" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -146,7 +146,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio :ripple="false" color="orange" label="3+ stars" value="3" ></v-radio>
+                  <v-radio :ripple="false" color="orange" label="3+ points" value="3" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -155,7 +155,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio :ripple="false" color="orange" label="2+ stars" value="2" ></v-radio>
+                  <v-radio :ripple="false" color="orange" label="2+ points" value="2" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -164,7 +164,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio :ripple="false" color="orange" label="1+ stars" value="1" ></v-radio>
+                  <v-radio :ripple="false" color="orange" label="1+ points" value="1" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -597,6 +597,7 @@
             vm.categoryFilters.push(item)
           }
         })
+        vm.category.sort()
       },
       exampleSearch (term) {
         this.searchTerm = term
