@@ -230,6 +230,45 @@
         </v-avatar>
       </v-btn>
     </v-toolbar>
+
+    <template v-if="modalData != null">
+      <v-dialog v-model="dialog" max-width="60%" scrollable>
+        <v-card>
+          <v-card-title class="headline">
+            <strong> Type - {{ modalData.type }} | &nbsp;</strong>
+            <small>
+              Relevance Score &nbsp;
+            </small>
+            <template v-for="searchPoints in calculateSearchPoints(modalData.relevance)">
+              <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
+            </template>
+            <template v-for="searchPoints in (5 - calculateSearchPoints(modalData.relevance))">
+              <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">lens</v-icon>
+            </template>
+          </v-card-title>
+
+          <v-card-text>
+            <template v-for="(modalDataField, key, j) in modalData.fields">
+              <span :key="j"><strong>{{ key.toUpperCase() }}</strong> - {{ modalDataField }} </span><br>
+            </template>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn
+              dark
+              ripple="false"
+              target="_blank"
+              color="green "
+              :href="generateReportLink(modalData.id, modalData.url)"
+            >
+              <v-icon color="white">open_in_new</v-icon> Open Portal
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click.native="dialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </template>
+
     <v-content>
       <v-tabs
         dark
@@ -355,7 +394,7 @@
                               v-for="(mineResults, i) in filterResults(selectedMine.result.results)"
                               :key="i"
                               avatar
-                              @click=""
+                              @click="showModal(mineResults, selectedMine.url)"
                               :style="{ color: selectColor(mineResults.type)}"
                             >
                               <v-list-tile-avatar>
@@ -364,7 +403,7 @@
                               <v-list-tile-content>
                                 <v-list-tile-title>
                                   <strong>Type - {{ mineResults.type }} | </strong>
-                                  <small><strong>Relevance Score </strong></small>
+                                  <small><strong>Relevance Score &nbsp;</strong></small>
                                   <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
                                     <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
                                   </template>
@@ -384,6 +423,7 @@
                                   ripple
                                   target="_blank"
                                   color="orange lighten-2"
+                                  @click.stop
                                   :href="generateReportLink(mineResults.id, selectedMine.url)"
                                 >
                                   <v-icon color="white">open_in_new</v-icon>
@@ -449,7 +489,8 @@
       emptyResultMines: [],
       failedSearchMines: [],
       protocol: document.location.protocol,
-      host: document.location.host
+      host: document.location.host,
+      modalData: null
     }),
     methods: {
       searchMine () {
@@ -570,6 +611,11 @@
             vm.selected.push(item)
           }
         })
+      },
+      showModal (data, url) {
+        data.url = url
+        this.modalData = data
+        this.dialog = true
       }
     },
     props: {
