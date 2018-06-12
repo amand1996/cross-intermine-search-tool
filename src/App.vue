@@ -255,7 +255,7 @@
           <v-card-actions>
             <v-btn
               dark
-              ripple="false"
+              :ripple="false"
               target="_blank"
               color="green "
               :href="generateReportLink(modalData.id, modalData.url)"
