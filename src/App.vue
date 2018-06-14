@@ -431,7 +431,7 @@
                               </v-list-tile-action>
                             </v-list-tile>
                             <template v-if="selectedMine.result.fetchMore != undefined && selectedMine.result.fetchMore === true">
-                              <h3 id="loadMsg" style="text-align: center; cursor: pointer;" @click="loadMoreResults(selectedMine.result.searchTerm, selectedMine)">
+                              <h3 :id="'loadMsg_' + selectedMine.text" style="text-align: center; cursor: pointer;" @click="loadMoreResults(selectedMine.result.searchTerm, selectedMine)">
                                 Load more
                               </h3>
                             </template>
@@ -623,7 +623,7 @@
         this.dialog = true
       },
       loadMoreResults (searchTerm, selectedMine) {
-        document.getElementById('loadMsg').innerHTML = 'Loading...'
+        document.getElementById('loadMsg_' + selectedMine.text).innerHTML = 'Loading...'
 
         let vm = this
         let mineService = new intermine.Service({root: selectedMine.url})
@@ -646,7 +646,7 @@
             }
             vm.$forceUpdate()
           }
-          document.getElementById('loadMsg').innerHTML = 'Load more'
+          document.getElementById('loadMsg_' + selectedMine.text).innerHTML = 'Load more'
         })
       }
     },
