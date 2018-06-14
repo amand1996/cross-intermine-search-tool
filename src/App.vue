@@ -430,8 +430,8 @@
                                 </v-btn>
                               </v-list-tile-action>
                             </v-list-tile>
-                            <template v-if="selectedMine.result.totalHits != undefined && selectedMine.result.totalHits > 100">
-                              <h3 style="text-align: center; cursor: pointer;">
+                            <template v-if="selectedMine.result.fetchMore != undefined && selectedMine.result.fetchMore === true">
+                              <h3 id="loadMsg" style="text-align: center; cursor: pointer;" @click="loadMoreResults(selectedMine.result.searchTerm, selectedMine)">
                                 Load more
                               </h3>
                             </template>
@@ -510,14 +510,18 @@
           let mineService = new intermine.Service({root: mineObj.url})
           let options = {
             q: vm.searchTerm
-            // size: 50,
-            // start: 100
           }
           mineService.search(options).then((data) => {
             if (data !== undefined && data.wasSuccessful === true && data.statusCode === 200 && data.error === null) {
               mineObj.result = data
+              mineObj.result.searchTerm = vm.searchTerm
               if (data.results.length === 0) {
                 vm.emptyResultMines.push(mineObj.text)
+              }
+              if (data.results.length === 100) {
+                mineObj.result.fetchMore = true
+              } else {
+                mineObj.result.fetchMore = false
               }
               vm.pushToCategoryList(data.facets.Category)
             } else {
@@ -617,6 +621,33 @@
         data.url = url
         this.modalData = data
         this.dialog = true
+      },
+      loadMoreResults (searchTerm, selectedMine) {
+        document.getElementById('loadMsg').innerHTML = 'Loading...'
+
+        let vm = this
+        let mineService = new intermine.Service({root: selectedMine.url})
+        let mineIndex = vm.selected.indexOf(selectedMine)
+
+        let options = {
+          q: searchTerm,
+          start: vm.selected[mineIndex].result.results.length
+        }
+
+        mineService.search(options).then((data) => {
+          if (data !== undefined && data.wasSuccessful === true && data.statusCode === 200 && data.error === null) {
+            data.results.map((item) => {
+              vm.selected[mineIndex].result.results.push(item)
+            })
+            if (data.results.length === 100) {
+              vm.selected[mineIndex].result.fetchMore = true
+            } else {
+              vm.selected[mineIndex].result.fetchMore = false
+            }
+            vm.$forceUpdate()
+          }
+          document.getElementById('loadMsg').innerHTML = 'Load more'
+        })
       }
     },
     props: {
