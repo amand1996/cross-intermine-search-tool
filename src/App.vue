@@ -496,6 +496,7 @@
       searchMine () {
         let vm = this
         if (vm.searchTerm.trim() === '' || vm.selected.length === 0) {
+          alert('Please select a mine and use a search term to search the mines.')
           return
         }
         vm.failedSearchMines = []
@@ -663,6 +664,12 @@
             neighbourhood: mine.neighbours
           })
         })
+      }).then(() => {
+        if (this.$route.query.search) {
+          this.selectAll()
+          this.searchTerm = this.$route.query.search
+          this.searchMine()
+        }
       })
     }
   }
