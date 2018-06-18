@@ -499,6 +499,7 @@
           alert('Please select a mine and use a search term to search the mines.')
           return
         }
+        vm.$router.replace({'query': {'search': vm.searchTerm}})
         vm.failedSearchMines = []
         vm.emptyResultMines = []
         vm.searchActive = true
