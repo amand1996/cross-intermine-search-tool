@@ -1,1 +1,49 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Cross Intermine Search Tool</title><link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel=stylesheet><link href=/static/css/app.d840214ee4c2a0adfab248ff6c92d131.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/static/js/manifest.2ae2e69a05c33dfc65f8.js></script><script type=text/javascript src=/static/js/vendor.f4deb0e5e360d81f83e1.js></script><script type=text/javascript src=/static/js/app.bce39b462e47eb08769b.js></script></body></html>
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Cross Intermine Search Tool</title><link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/intro.js@2.9.3/introjs.css><style>.introjs-helperLayer {
+      background-color: rgba(255, 255, 255, 0);
+      border: 3px dotted #ffffff9c;
+      border-radius: 0px;
+    }</style><link href=/static/css/app.d840214ee4c2a0adfab248ff6c92d131.css rel=stylesheet></head><body><div id=app></div><script src=https://cdn.jsdelivr.net/npm/intro.js@2.9.3/intro.js></script><script type=text/javascript src=/static/js/manifest.2ae2e69a05c33dfc65f8.js></script><script type=text/javascript src=/static/js/vendor.f4deb0e5e360d81f83e1.js></script><script type=text/javascript src=/static/js/app.37a58b340486d7bebd47.js></script></body><script>var intro = introJs()
+  intro.setOption('tooltipPosition', 'auto')
+  intro.setOption('showStepNumbers', false)
+  intro.setOption('scrollToElement', true)
+  intro.setOption('showProgress', true)
+  intro.setOption('showBullets', true)
+  intro.setOption('scrollTo', 'tooltip')
+  intro.setOption('disableInteraction', true)
+
+  intro.setOptions({
+    steps: [
+      {
+        element: '#e3',
+        intro: "Click on any of the search keyword to start a search demo.",
+        position: 'bottom'
+      },
+      {
+        element: '#minesBox',
+        intro: "Select the Intermines you are interested in",
+        position: 'right'
+      },
+      {
+        element: '#searchBox',
+        intro: "Enter a search keyword and hit ENTER",
+        position: 'bottom'
+      },
+      {
+        element: '#relevanceBox',
+        intro: "Relevance filter can be used to filter the result items based on relevance score.",
+        position: 'right'
+      },
+      {
+        element: '#categoryBox',
+        intro: "Category filter can be used to filter the result items based on their category.",
+        position: 'right'
+      }
+    ]
+  })
+  document.getElementById('tourBtn').onclick = function () {
+    intro.start()
+  }
+
+  document.getElementById('tourBtn1').onclick = function () {
+    intro.start()
+  }</script></html>

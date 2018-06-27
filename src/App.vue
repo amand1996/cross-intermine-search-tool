@@ -23,6 +23,7 @@
             v-model="selectIntermines.model"
             :prepend-icon="selectIntermines.model ? selectIntermines.icon : selectIntermines['icon-alt']"
             append-icon=""
+            id="minesBox"
           >
             <v-list-tile slot="activator">
               <v-list-tile-content>
@@ -92,35 +93,7 @@
             </v-list-tile>
           </v-list-group>
 
-          <v-list-tile v-if="category.length != 0">
-            <v-list-tile-action>
-              <v-icon>view_list</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>
-                Category Filter
-              </v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-          
-          <v-list-tile
-            v-if="category.length != 0"
-            v-for="(categoryItem, i) in category"
-            :key="i"
-            @click=""
-          >
-            <v-list-tile-action>
-              <v-icon :style="{ color: selectColor(categoryItem)}">layers</v-icon>
-            </v-list-tile-action>
-            
-            <v-list-tile-content>
-              <v-list-tile-title>
-                <v-checkbox :ripple="false" v-model="categoryFilters" :label="categoryItem" color="success" :value="categoryItem"></v-checkbox>
-              </v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-
-          <v-radio-group v-model="scoreFilter" @change="filterResults">
+          <v-radio-group v-model="scoreFilter" @change="filterResults" id="relevanceBox">
             <v-list-tile>
               <v-list-tile-action>
                 <v-icon color="yellow">star</v-icon>
@@ -170,6 +143,46 @@
             </v-list-tile>
           </v-radio-group>
 
+          <v-list-tile id="categoryBox">
+            <v-list-tile-action>
+              <v-icon>view_list</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Category Filter
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          
+          <v-list-tile v-if="category.length == 0">
+            <v-list-tile-action>
+              <v-icon></v-icon>
+            </v-list-tile-action>
+            
+            <v-list-tile-content>
+              <v-list-tile-title>
+                --EMPTY--
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-tile
+            v-if="category.length != 0"
+            v-for="(categoryItem, i) in category"
+            :key="i"
+            @click=""
+          >
+            <v-list-tile-action>
+              <v-icon :style="{ color: selectColor(categoryItem)}">layers</v-icon>
+            </v-list-tile-action>
+            
+            <v-list-tile-content>
+              <v-list-tile-title>
+                <v-checkbox :ripple="false" v-model="categoryFilters" :label="categoryItem" color="success" :value="categoryItem"></v-checkbox>
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
           <v-list-tile @click="">
             <v-list-tile-action>
               <v-icon>chat_bubble</v-icon>
@@ -181,13 +194,13 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-list-tile @click="">
+          <v-list-tile @click="" id="tourBtn">
             <v-list-tile-action>
               <v-icon>help</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
-                Help
+                Feature Tour
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -208,7 +221,7 @@
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <span class="hidden-sm-and-down">Cross Intermine Search Tool</span>
       </v-toolbar-title>
-      <v-layout row align-center style="max-width: 650px">
+      <v-layout row align-center style="max-width: 650px" id="searchBox">
         <v-text-field
           single-line
           hide-details
@@ -221,10 +234,15 @@
         ></v-text-field>
       </v-layout>
       <v-spacer></v-spacer>
+      <v-btn icon large id="tourBtn1">
+        <v-avatar size="2em" tile>
+          <v-icon>help</v-icon>
+        </v-avatar>
+      </v-btn>
       <v-btn icon large>
         <v-avatar size="2em" tile>
           <img
-            src="@/assets/logo.png"
+            src="/static/assets/logo.png"
             alt="IM"
           >
         </v-avatar>
@@ -242,9 +260,9 @@
             <template v-for="searchPoints in calculateSearchPoints(modalData.relevance)">
               <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
             </template>
-            <template v-for="searchPoints in (5 - calculateSearchPoints(modalData.relevance))">
+            <!-- <template v-for="searchPoints in (5 - calculateSearchPoints(modalData.relevance))">
               <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">lens</v-icon>
-            </template>
+            </template> -->
           </v-card-title>
 
           <v-card-text>
@@ -407,9 +425,9 @@
                                   <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
                                     <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
                                   </template>
-                                  <template v-for="searchPoints in (5 - calculateSearchPoints(mineResults.relevance))">
+                                  <!-- <template v-for="searchPoints in (5 - calculateSearchPoints(mineResults.relevance))">
                                     <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">lens</v-icon>
-                                  </template>
+                                  </template> -->
                                 </v-list-tile-title>
                                 <v-list-tile-sub-title>
                                   <template v-for="(mineResultsField, key, j) in mineResults.fields">
@@ -651,9 +669,6 @@
           document.getElementById('loadMsg_' + selectedMine.text).innerHTML = 'Load more'
         })
       }
-    },
-    props: {
-      source: String
     },
     created () {
       axios.get(`https://registry.intermine.org/service/instances`)
