@@ -19,6 +19,17 @@
             </v-list-tile-content>
           </v-list-tile>
 
+          <v-list-tile @click="getLocalStorage()">
+            <v-list-tile-action>
+              <v-icon>cloud_download</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Favourites
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
           <v-list-group
             v-model="selectIntermines.model"
             :prepend-icon="selectIntermines.model ? selectIntermines.icon : selectIntermines['icon-alt']"
@@ -253,10 +264,8 @@
       <v-dialog v-model="dialog" max-width="60%" scrollable>
         <v-card>
           <v-card-title class="headline">
-            <strong> Type - {{ modalData.type }} | &nbsp;</strong>
-            <small>
-              Relevance Score &nbsp;
-            </small>
+            <strong> Type - {{ modalData.type }}&nbsp;</strong>
+            <small>| Relevance Score &nbsp;</small>
             <template v-for="searchPoints in calculateSearchPoints(modalData.relevance)">
               <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
             </template>
@@ -310,13 +319,19 @@
           >
             Results
           </v-tab>
+          <v-tab
+            :href="'#tab-localstorage'"
+            :ripple="false"
+            v-if="localStorageActive"
+          >
+            Favourites
+          </v-tab>
         </template>
         
         <v-tabs-items fixed>
           <v-tab-item
             :id="'tab-home'"
           >
-            
             <template>
               <div
                 id="e3"
@@ -358,6 +373,67 @@
             </template>
 
           </v-tab-item>
+          <v-tab-item
+            :id="'tab-localstorage'"
+          >
+            <template v-if="localData.length != 0">
+              <v-list three-line subheader>
+                <template>
+                  <v-list-tile
+                    v-for="(item, i) in localData"
+                    :key="i"
+                    avatar
+                    @click="showModal(item, item.url, item.mineName)"
+                    :style="{ color: selectColor(item.type)}"
+                  >
+                    <v-list-tile-avatar>
+                      <strong>{{ i+1 }}</strong>
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        <strong>{{ item.mineName }} | Type - {{ item.type }} </strong>
+                        <v-tooltip bottom>
+                          <v-icon
+                            slot="activator"
+                            @click.stop="deleteFromLocalStorage(item.localId)"
+                            :style="{ color: selectColor(item.type)}"
+                          >
+                            delete
+                          </v-icon>
+                          <span>Delete from Favourites</span>
+                        </v-tooltip>
+                        <small><strong>| Relevance Score &nbsp;</strong></small>
+                        <template v-for="searchPoints in calculateSearchPoints(item.relevance)">
+                          <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
+                        </template>
+                      </v-list-tile-title>
+                      <v-list-tile-sub-title>
+                        <template v-for="(mineResultsField, key, j) in item.fields">
+                          <span :key="j"><strong>| {{ key.toUpperCase() }}</strong> - {{ mineResultsField }} </span>
+                        </template>
+                      </v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action>
+                      <v-btn
+                        icon
+                        ripple
+                        target="_blank"
+                        color="orange lighten-2"
+                        @click.stop
+                        :href="generateReportLink(item.id, item.url)"
+                      >
+                        <v-icon color="white">open_in_new</v-icon>
+                      </v-btn>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                </template>
+              </v-list>
+            </template>
+            <template v-else>
+              No Favourites added
+            </template>
+          </v-tab-item>
+
           <v-tab-item
             :id="'tab-results'"
           >
@@ -412,7 +488,7 @@
                               v-for="(mineResults, i) in filterResults(selectedMine.result.results)"
                               :key="i"
                               avatar
-                              @click="showModal(mineResults, selectedMine.url)"
+                              @click="showModal(mineResults, selectedMine.url, selectedMine.text)"
                               :style="{ color: selectColor(mineResults.type)}"
                             >
                               <v-list-tile-avatar>
@@ -420,8 +496,18 @@
                               </v-list-tile-avatar>
                               <v-list-tile-content>
                                 <v-list-tile-title>
-                                  <strong>Type - {{ mineResults.type }} | </strong>
-                                  <small><strong>Relevance Score &nbsp;</strong></small>
+                                  <strong>Type - {{ mineResults.type }} </strong>
+                                  <v-tooltip bottom>
+                                    <v-icon
+                                      slot="activator"
+                                      @click.stop="saveToLocalStorage(mineResults, selectedMine.text, selectedMine.url)"
+                                      :style="{ color: selectColor(mineResults.type)}"
+                                    >
+                                      save_alt
+                                    </v-icon>
+                                    <span>Save to Favourites</span>
+                                  </v-tooltip>
+                                  <small><strong>| Relevance Score &nbsp;</strong></small>
                                   <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
                                     <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
                                   </template>
@@ -476,6 +562,8 @@
 
   export default {
     data: () => ({
+      localData: [],
+      localStorageActive: false,
       dialog: false,
       drawer: null,
       tabModal: 'tab-home',
@@ -637,8 +725,9 @@
           }
         })
       },
-      showModal (data, url) {
+      showModal (data, url, mineName) {
         data.url = url
+        data.mineName = mineName
         this.modalData = data
         this.dialog = true
       },
@@ -668,6 +757,40 @@
           }
           document.getElementById('loadMsg_' + selectedMine.text).innerHTML = 'Load more'
         })
+      },
+      saveToLocalStorage (data, mineName, url) {
+        let vm = this
+        data.mineName = mineName
+        data.url = url
+        let localId = `IM_${mineName}_${data.id}`
+        data.localId = localId
+        if (localStorage.getItem(localId)) {
+          alert('Item already exists!')
+        } else {
+          localStorage.setItem(localId, JSON.stringify(data))
+          vm.refreshLocalData()
+          alert('Saved to Favourites!')
+        }
+      },
+      getLocalStorage () {
+        let vm = this
+        vm.localStorageActive = true
+        vm.tabModal = 'tab-localstorage'
+        vm.refreshLocalData()
+      },
+      refreshLocalData () {
+        let vm = this
+        vm.localData = []
+        for (let item in localStorage) {
+          if (item.substring(0, 2) === 'IM') {
+            let dataItem = JSON.parse(localStorage.getItem(item))
+            vm.localData.push(dataItem)
+          }
+        }
+      },
+      deleteFromLocalStorage (localId) {
+        localStorage.removeItem(localId)
+        this.refreshLocalData()
       }
     },
     created () {
