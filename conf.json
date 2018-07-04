@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    "node_modules/jsdoc-vuejs"
+  ],
+  "source": {
+    "include": ["README.md", "src"],
+    "includePattern": "\\.(vue|js)$"
+  }
+}
