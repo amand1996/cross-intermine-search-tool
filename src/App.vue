@@ -618,7 +618,6 @@
                       </v-card>
                     </v-flex>
                   </v-layout>
-                  <br>
                 </v-container>
               </v-card>
             </template>
