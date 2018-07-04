@@ -8,9 +8,9 @@
     >
       <v-list dense>
         <template> 
-          <v-list-tile @click="">
+          <v-list-tile @click="activateHomeTab()">
             <v-list-tile-action>
-              <v-icon>home</v-icon>
+              <v-icon color="teal">home</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -19,13 +19,24 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-list-tile @click="getLocalStorage()">
+          <v-list-tile @click="getLocalStorage()" id="fav">
             <v-list-tile-action>
-              <v-icon>cloud_download</v-icon>
+              <v-icon color="purple">cloud_download</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
                 Favourites
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-tile @click="activateInterMinesTab()" id="exploreIM">
+            <v-list-tile-action>
+              <v-icon color="green">apps</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Explore InterMines
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -205,7 +216,7 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-list-tile @click="" id="tourBtn">
+          <v-list-tile @click="tabModal = 'tab-home'" id="tourBtn">
             <v-list-tile-action>
               <v-icon>help</v-icon>
             </v-list-tile-action>
@@ -245,7 +256,7 @@
         ></v-text-field>
       </v-layout>
       <v-spacer></v-spacer>
-      <v-btn icon large id="tourBtn1">
+      <v-btn icon large id="tourBtn1" @click="tabModal = 'tab-home'">
         <v-avatar size="2em" tile>
           <v-icon>help</v-icon>
         </v-avatar>
@@ -326,6 +337,13 @@
           >
             Favourites
           </v-tab>
+          <v-tab
+            :href="'#tab-intermines'"
+            :ripple="false"
+            v-if="interminesActive"
+          >
+            InterMines
+          </v-tab>
         </template>
         
         <v-tabs-items fixed>
@@ -373,6 +391,62 @@
             </template>
 
           </v-tab-item>
+
+          <v-tab-item
+            :id="'tab-intermines'"
+          >
+            <template>
+              <div
+                id="e3"
+                style="margin: auto;"
+                class="grey lighten-3"
+              >
+                <v-card>
+                  <v-container
+                    fluid
+                    grid-list-lg
+                  >
+                    <v-layout row wrap>
+                      <v-flex xs12 v-for="(item, i) in minesList" :key="i">
+                        <v-card color="cyan darken-2" class="white--text">
+                          <v-container fluid grid-list-lg>
+                            <v-layout row>
+                              <v-flex xs10>
+                                <div>
+                                  <div class="headline"><strong>{{ item.name }}</strong></div>
+                                  <div>{{ item.description }}</div>
+                                  <div>
+                                    <strong>Organisms - </strong><span v-for="organism in item.organisms" :key="organism"> {{ organism }} /</span>
+                                  </div>
+                                  <br>
+                                  <div style="font-style: italic;">{{ item.url }}</div>
+                                </div>
+                              </v-flex>
+                              <v-flex xs2>
+                                <v-card-media
+                                  v-if="item.images !== undefined && Object.keys(item.images).indexOf('logo') >= 0"
+                                  :src="item.images['logo']"
+                                  height="5em"
+                                  contain
+                                ></v-card-media>
+                                <v-card-media
+                                  v-else
+                                  src="/static/assets/logo.png"
+                                  height="5em"
+                                  contain
+                                ></v-card-media>
+                              </v-flex>
+                            </v-layout>
+                          </v-container>
+                        </v-card>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card>
+              </div>
+            </template>
+          </v-tab-item>
+
           <v-tab-item
             :id="'tab-localstorage'"
           >
@@ -564,6 +638,7 @@
     data: () => ({
       localData: [],
       localStorageActive: false,
+      interminesActive: false,
       dialog: false,
       drawer: null,
       tabModal: 'tab-home',
@@ -596,7 +671,8 @@
       failedSearchMines: [],
       protocol: document.location.protocol,
       host: document.location.host,
-      modalData: null
+      modalData: null,
+      minesList: null
     }),
     methods: {
       searchMine () {
@@ -778,6 +854,15 @@
         vm.tabModal = 'tab-localstorage'
         vm.refreshLocalData()
       },
+      activateInterMinesTab () {
+        let vm = this
+        vm.interminesActive = true
+        vm.tabModal = 'tab-intermines'
+      },
+      activateHomeTab () {
+        let vm = this
+        vm.tabModal = 'tab-home'
+      },
       refreshLocalData () {
         let vm = this
         vm.localData = []
@@ -794,8 +879,10 @@
       }
     },
     created () {
+      let vm = this
       axios.get(`https://registry.intermine.org/service/instances`)
       .then(response => {
+        vm.minesList = response.data.instances
         response.data.instances.map((mine) => {
           this.selectIntermines.children.push({
             text: mine.name,
