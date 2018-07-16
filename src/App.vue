@@ -205,7 +205,7 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-list-tile @click="">
+          <v-list-tile @click="" href="http://chat.intermine.org/" target="_blank">
             <v-list-tile-action>
               <v-icon>chat_bubble</v-icon>
             </v-list-tile-action>
@@ -261,7 +261,7 @@
           <v-icon>help</v-icon>
         </v-avatar>
       </v-btn>
-      <v-btn icon large>
+      <v-btn icon large href="http://intermine.org/" target="_blank">
         <v-avatar size="2em" tile>
           <img
             src="/static/assets/logo.png"
