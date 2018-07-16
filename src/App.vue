@@ -21,7 +21,7 @@
 
           <v-list-tile @click="getLocalStorage()" id="fav">
             <v-list-tile-action>
-              <v-icon color="purple">cloud_download</v-icon>
+              <v-icon color="purple">library_books</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -419,7 +419,7 @@
                                     <strong>Organisms - </strong><span v-for="organism in item.organisms" :key="organism"> {{ organism }} /</span>
                                   </div>
                                   <br>
-                                  <div style="font-style: italic;">{{ item.url }}</div>
+                                  <div style="font-style: italic;"><a class="mine_link" v-bind:href="''+item.url+''" target="_blank">{{ item.url }}</a></div>
                                 </div>
                               </v-flex>
                               <v-flex xs2>
@@ -554,7 +554,7 @@
                             <h3 style="text-align: center;">Loading...</h3>
                           </template>
                           <template v-else-if="filterResults(selectedMine.result.results).length == 0">
-                            <h3 style="text-align: center;">No results found.</h3>
+                            <h3 style="text-align: center;">No results were found for the selected filters.</h3>
                           </template>
 
                           <template v-else>
@@ -577,7 +577,7 @@
                                       @click.stop="saveToLocalStorage(mineResults, selectedMine.text, selectedMine.url)"
                                       :style="{ color: selectColor(mineResults.type)}"
                                     >
-                                      save_alt
+                                      library_books
                                     </v-icon>
                                     <span>Save to Favourites</span>
                                   </v-tooltip>
@@ -912,5 +912,11 @@
     font-style: italic;
     cursor: pointer;
     text-decoration: underline;
+  }
+
+  .mine_link {
+    text-decoration: inherit;
+    color: inherit;
+    cursor: pointer;
   }
 </style>
