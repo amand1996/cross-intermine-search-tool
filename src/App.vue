@@ -307,6 +307,30 @@
       </v-dialog>
     </template>
 
+    <template>
+      <div class="text-xs-center">
+        <v-dialog
+          v-model="progressDialog"
+          persistent
+          width="20%"
+        >
+          <v-card
+            color="white"
+            light
+          >
+            <v-card-text>
+              Please wait
+              <v-progress-linear
+                indeterminate
+                color="purple"
+                class="mb-0"
+              ></v-progress-linear>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </div>
+    </template>
+
     <v-content>
       <v-tabs
         dark
@@ -599,7 +623,7 @@
                                   icon
                                   ripple
                                   target="_blank"
-                                  color="orange lighten-2"
+                                  color="blue-grey lighten-2"
                                   @click.stop
                                   :href="generateReportLink(mineResults.id, selectedMine.url)"
                                 >
@@ -639,6 +663,7 @@
       toggleSelectMines: false,
       localStorageActive: false,
       interminesActive: false,
+      progressDialog: true,
       dialog: false,
       drawer: null,
       tabModal: 'tab-home',
@@ -907,6 +932,7 @@
         })
       }).then(() => {
         this.selectAll()
+        vm.progressDialog = false
         if (this.$route.query.search) {
           this.searchTerm = this.$route.query.search
           this.searchMine()
