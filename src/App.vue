@@ -10,7 +10,7 @@
         <template>
           <v-list-tile @click="activateHomeTab()">
             <v-list-tile-action>
-              <v-icon color="teal">home</v-icon>
+              <v-icon color="blue-grey darken-1">home</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -21,7 +21,7 @@
 
           <v-list-tile @click="getLocalStorage()" id="fav">
             <v-list-tile-action>
-              <v-icon color="purple">library_books</v-icon>
+              <v-icon color="blue-grey darken-1">library_books</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -32,7 +32,7 @@
 
           <v-list-tile @click="activateInterMinesTab()" id="exploreIM">
             <v-list-tile-action>
-              <v-icon color="green">apps</v-icon>
+              <v-icon color="blue-grey darken-1">apps</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -57,29 +57,18 @@
 
             <v-list-tile @click="selectAll">
               <v-list-tile-action>
-                <v-icon color="teal">done_all</v-icon>
+                <v-icon color="blue-grey darken-1">done_all</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  Select All
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-
-            <v-list-tile @click="selectNone">
-              <v-list-tile-action>
-                <v-icon color="teal">filter_none</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  Select None
+                  Select All / None
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-list-tile @click="changeNeighbourhood('MODs')">
               <v-list-tile-action>
-                <v-icon color="red">image_search</v-icon>
+                <v-icon color="blue-grey darken-1">image_search</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -90,7 +79,7 @@
 
             <v-list-tile @click="changeNeighbourhood('Plants')">
               <v-list-tile-action>
-                <v-icon color="green">image_search</v-icon>
+                <v-icon color="blue-grey darken-1">image_search</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -109,7 +98,7 @@
 
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-checkbox :ripple="false" v-model="selected" :label="child.text" color="success" :value="child"></v-checkbox>
+                  <v-checkbox :ripple="false" v-model="selected" :label="child.text" color="blue-grey darken-1" :value="child"></v-checkbox>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -118,7 +107,7 @@
           <v-radio-group v-model="scoreFilter" @change="filterResults" id="relevanceBox">
             <v-list-tile>
               <v-list-tile-action>
-                <v-icon color="yellow">star</v-icon>
+                <v-icon color="blue-grey darken-1">star</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -132,7 +121,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio :ripple="false" color="orange" label="4+ points" value="4" ></v-radio>
+                  <v-radio :ripple="false" label="4 stars & up" value="4" color="blue-grey darken-1" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -141,7 +130,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio :ripple="false" color="orange" label="3+ points" value="3" ></v-radio>
+                  <v-radio :ripple="false" label="3 stars & up" value="3" color="blue-grey darken-1" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -150,7 +139,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio :ripple="false" color="orange" label="2+ points" value="2" ></v-radio>
+                  <v-radio :ripple="false" label="2 stars & up" value="2" color="blue-grey darken-1" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -159,7 +148,7 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <v-radio :ripple="false" color="orange" label="1+ points" value="1" ></v-radio>
+                  <v-radio :ripple="false" label="1 star & up" value="1" color="blue-grey darken-1" ></v-radio>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -167,7 +156,7 @@
 
           <v-list-tile id="categoryBox">
             <v-list-tile-action>
-              <v-icon color="teal darken-4">view_list</v-icon>
+              <v-icon color="blue-grey darken-1">view_list</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -176,24 +165,13 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-list-tile @click="selectAllCategories" v-show="category.length != 0">
+          <v-list-tile @click="selectAllNoneCategories" v-show="category.length != 0">
             <v-list-tile-action>
-              <v-icon color="teal">done_all</v-icon>
+              <v-icon color="blue-grey darken-1">done_all</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
-                Select All
-              </v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-
-          <v-list-tile @click="selectNoneCategories" v-show="category.length != 0">
-            <v-list-tile-action>
-              <v-icon color="teal">filter_none</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>
-                Select None
+                Select All / None
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -217,19 +195,19 @@
             @click=""
           >
             <v-list-tile-action>
-              <v-icon :style="{ color: selectColor(categoryItem)}">layers</v-icon>
+              <!--<v-icon :style="{ color: selectColor(categoryItem)}">layers</v-icon>-->
             </v-list-tile-action>
 
             <v-list-tile-content>
               <v-list-tile-title>
-                <v-checkbox :ripple="false" v-model="categoryFilters" :label="categoryItem" color="success" :value="categoryItem"></v-checkbox>
+                <v-checkbox :ripple="false" v-model="categoryFilters" :label="categoryItem" :value="categoryItem" color="blue-grey darken-1"></v-checkbox>
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
 
           <v-list-tile @click="" href="http://chat.intermine.org/" target="_blank">
             <v-list-tile-action>
-              <v-icon>chat_bubble</v-icon>
+              <v-icon color="blue-grey darken-1">chat_bubble</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -240,7 +218,7 @@
 
           <v-list-tile @click="tabModal = 'tab-home'" id="tourBtn">
             <v-list-tile-action>
-              <v-icon>help</v-icon>
+              <v-icon color="blue-grey darken-1">help</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -300,10 +278,10 @@
             <strong> Type - {{ modalData.type }}&nbsp;</strong>
             <small>| Relevance Score &nbsp;</small>
             <template v-for="searchPoints in calculateSearchPoints(modalData.relevance)">
-              <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
+              <v-icon small color="yellow" :key="searchPoints + '_active'">star</v-icon>
             </template>
             <!-- <template v-for="searchPoints in (5 - calculateSearchPoints(modalData.relevance))">
-              <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">lens</v-icon>
+              <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">star</v-icon>
             </template> -->
           </v-card-title>
 
@@ -430,7 +408,7 @@
                   >
                     <v-layout row wrap>
                       <v-flex xs12 v-for="(item, i) in minesList" :key="i">
-                        <v-card color="cyan darken-2" class="white--text">
+                        <v-card color="grey lighten-5" light v-bind:href="''+item.url+''" target="_blank">
                           <v-container fluid grid-list-lg>
                             <v-layout row>
                               <v-flex xs10>
@@ -441,20 +419,20 @@
                                     <strong>Organisms - </strong><span v-for="organism in item.organisms" :key="organism"> {{ organism }} /</span>
                                   </div>
                                   <br>
-                                  <div style="font-style: italic;"><a class="mine_link" v-bind:href="''+item.url+''" target="_blank">{{ item.url }}</a></div>
+                                  <div style="font-style: italic;">{{ item.url }}</div>
                                 </div>
                               </v-flex>
                               <v-flex xs2>
                                 <v-card-media
                                   v-if="item.images !== undefined && Object.keys(item.images).indexOf('logo') >= 0"
                                   :src="item.images['logo']"
-                                  height="5em"
+                                  height="4em"
                                   contain
                                 ></v-card-media>
                                 <v-card-media
                                   v-else
                                   src="/static/assets/logo.png"
-                                  height="5em"
+                                  height="4em"
                                   contain
                                 ></v-card-media>
                               </v-flex>
@@ -500,7 +478,7 @@
                         </v-tooltip>
                         <small><strong>| Relevance Score &nbsp;</strong></small>
                         <template v-for="searchPoints in calculateSearchPoints(item.relevance)">
-                          <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
+                          <v-icon small color="yellow" :key="searchPoints + '_active'">star</v-icon>
                         </template>
                       </v-list-tile-title>
                       <v-list-tile-sub-title>
@@ -541,8 +519,8 @@
               <v-alert v-if="this.failedSearchMines.length != 0" :value="true" type="error">
                 Something went wrong in the following mine(s): <span v-for="errorMine in this.failedSearchMines" :key="errorMine"> {{ errorMine }} /</span>
               </v-alert>
-              <v-alert v-if="this.emptyResultMines.length != 0" :value="true" type="info">
-                Some mines didn't return results: <span v-for="emptyMine in this.emptyResultMines" :key="emptyMine"> {{ emptyMine }} /</span>
+              <v-alert v-if="this.emptyResultMines.length != 0" :value="true" color="indigo lighten-4">
+                0 results returned from these mines: <span v-for="emptyMine in this.emptyResultMines" :key="emptyMine"> {{ emptyMine }} /</span>
               </v-alert>
 
               <v-card
@@ -557,13 +535,12 @@
                 >
                   <v-layout row>
                     <v-flex xs12>
-                      <v-toolbar color="green darken-1" dark flat>
-                          <v-toolbar-title>{{ selectedMine.text }} </v-toolbar-title>
-                          <v-spacer></v-spacer>
+                      <v-toolbar color="blue-grey darken-1" dark flat>
+                          <v-toolbar-title>{{ selectedMine.text }}&nbsp</v-toolbar-title>
                           <span v-if="selectedMine.result != undefined && selectedMine.result.totalHits != undefined">
                              <strong>
                                <small>
-                                (Total hits : {{ selectedMine.result.totalHits }})
+                                ({{ selectedMine.result.totalHits }} results)
                               </small>
                              </strong>
                           </span>
@@ -605,10 +582,10 @@
                                   </v-tooltip>
                                   <small><strong>| Relevance Score &nbsp;</strong></small>
                                   <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
-                                    <v-icon small color="red" :key="searchPoints + '_active'">lens</v-icon>
+                                    <v-icon small color="yellow" :key="searchPoints + '_active'">star</v-icon>
                                   </template>
                                   <!-- <template v-for="searchPoints in (5 - calculateSearchPoints(mineResults.relevance))">
-                                    <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">lens</v-icon>
+                                    <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">star</v-icon>
                                   </template> -->
                                 </v-list-tile-title>
                                 <v-list-tile-sub-title>
@@ -658,6 +635,8 @@
   export default {
     data: () => ({
       localData: [],
+      toggleSelectCategory: true,
+      toggleSelectMines: false,
       localStorageActive: false,
       interminesActive: false,
       dialog: false,
@@ -742,23 +721,27 @@
       },
       selectAll () {
         let vm = this
-        vm.selected = []
-        vm.selectIntermines.children.map((item) => {
-          vm.selected.push(item)
-        })
+        if (vm.toggleSelectMines) {
+          this.selected = []
+        } else {
+          vm.selected = []
+          vm.selectIntermines.children.map((item) => {
+            vm.selected.push(item)
+          })
+        }
+        vm.toggleSelectMines = !vm.toggleSelectMines
       },
-      selectNone () {
-        this.selected = []
-      },
-      selectAllCategories () {
+      selectAllNoneCategories () {
         let vm = this
-        vm.categoryFilters = []
-        vm.category.map((item) => {
-          vm.categoryFilters.push(item)
-        })
-      },
-      selectNoneCategories () {
-        this.categoryFilters = []
+        if (vm.toggleSelectCategory) {
+          vm.categoryFilters = []
+        } else {
+          vm.categoryFilters = []
+          vm.category.map((item) => {
+            vm.categoryFilters.push(item)
+          })
+        }
+        vm.toggleSelectCategory = !vm.toggleSelectCategory
       },
       calculateSearchPoints (score) {
         return Math.round(Math.max(0.1, Math.min(1, score)) * 5)
@@ -820,6 +803,7 @@
       },
       exampleSearch (term) {
         this.searchTerm = term
+        this.toggleSelectMines = false
         this.selectAll()
         this.searchMine()
       },
@@ -922,8 +906,8 @@
           })
         })
       }).then(() => {
+        this.selectAll()
         if (this.$route.query.search) {
-          this.selectAll()
           this.searchTerm = this.$route.query.search
           this.searchMine()
         }
