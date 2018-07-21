@@ -7,7 +7,7 @@
       app
     >
       <v-list dense>
-        <template> 
+        <template>
           <v-list-tile @click="activateHomeTab()">
             <v-list-tile-action>
               <v-icon color="teal">home</v-icon>
@@ -65,7 +65,7 @@
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            
+
             <v-list-tile @click="selectNone">
               <v-list-tile-action>
                 <v-icon color="teal">filter_none</v-icon>
@@ -106,7 +106,7 @@
             >
               <v-list-tile-action>
               </v-list-tile-action>
-              
+
               <v-list-tile-content>
                 <v-list-tile-title>
                   <v-checkbox :ripple="false" v-model="selected" :label="child.text" color="success" :value="child"></v-checkbox>
@@ -167,7 +167,7 @@
 
           <v-list-tile id="categoryBox">
             <v-list-tile-action>
-              <v-icon>view_list</v-icon>
+              <v-icon color="teal darken-4">view_list</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -175,12 +175,34 @@
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
-          
+
+          <v-list-tile @click="selectAllCategories" v-show="category.length != 0">
+            <v-list-tile-action>
+              <v-icon color="teal">done_all</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Select All
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-tile @click="selectNoneCategories" v-show="category.length != 0">
+            <v-list-tile-action>
+              <v-icon color="teal">filter_none</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Select None
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
           <v-list-tile v-if="category.length == 0">
             <v-list-tile-action>
               <v-icon></v-icon>
             </v-list-tile-action>
-            
+
             <v-list-tile-content>
               <v-list-tile-title>
                 --EMPTY--
@@ -197,7 +219,7 @@
             <v-list-tile-action>
               <v-icon :style="{ color: selectColor(categoryItem)}">layers</v-icon>
             </v-list-tile-action>
-            
+
             <v-list-tile-content>
               <v-list-tile-title>
                 <v-checkbox :ripple="false" v-model="categoryFilters" :label="categoryItem" color="success" :value="categoryItem"></v-checkbox>
@@ -231,7 +253,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    
+
     <v-toolbar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       color="teal darken-3"
@@ -315,7 +337,7 @@
         v-model="tabModal"
       >
         <v-tabs-slider color="yellow"></v-tabs-slider>
-        
+
         <template>
           <v-tab
             :href="'#tab-home'"
@@ -345,7 +367,7 @@
             InterMines
           </v-tab>
         </template>
-        
+
         <v-tabs-items fixed>
           <v-tab-item
             :id="'tab-home'"
@@ -547,9 +569,9 @@
                           </span>
                       </v-toolbar>
                       <v-card height="300" style="overflow-y: auto;">
-                        
+
                         <v-list three-line subheader>
-                          
+
                           <template v-if="selectedMine.result == undefined">
                             <h3 style="text-align: center;">Loading...</h3>
                           </template>
@@ -727,6 +749,16 @@
       },
       selectNone () {
         this.selected = []
+      },
+      selectAllCategories () {
+        let vm = this
+        vm.categoryFilters = []
+        vm.category.map((item) => {
+          vm.categoryFilters.push(item)
+        })
+      },
+      selectNoneCategories () {
+        this.categoryFilters = []
       },
       calculateSearchPoints (score) {
         return Math.round(Math.max(0.1, Math.min(1, score)) * 5)
