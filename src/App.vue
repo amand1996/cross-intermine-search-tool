@@ -569,7 +569,7 @@
                              </strong>
                           </span>
                       </v-toolbar>
-                      <v-card height="300" style="overflow-y: auto;">
+                      <v-card style="overflow-y: auto; max-height: 350px; height: auto;">
 
                         <v-list three-line subheader>
 
@@ -577,7 +577,7 @@
                             <h3 style="text-align: center;">Loading...</h3>
                           </template>
                           <template v-else-if="filterResults(selectedMine.result.results).length == 0">
-                            <h3 style="text-align: center;">No results were found for the selected filters.</h3>
+                            <h3 style="text-align: center;">No results were found for the selected filters. Please remove filters to view results.</h3>
                           </template>
 
                           <template v-else>
