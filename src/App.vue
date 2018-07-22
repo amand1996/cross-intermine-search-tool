@@ -586,14 +586,13 @@
                               :key="i"
                               avatar
                               @click="showModal(mineResults, selectedMine.url, selectedMine.text)"
-                              :style="{ color: selectColor(mineResults.type)}"
                             >
                               <v-list-tile-avatar>
                                 <strong>{{ i+1 }}</strong>
                               </v-list-tile-avatar>
                               <v-list-tile-content>
-                                <v-list-tile-title>
-                                  <strong>Type - {{ mineResults.type }} </strong>
+                                <v-list-tile-title :style="{ borderLeft: 'solid 4px ' + selectColor(mineResults.type) }">
+                                  <strong> &nbsp {{ mineResults.type }} </strong>
                                   <v-tooltip bottom>
                                     <v-icon
                                       slot="activator"
