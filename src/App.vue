@@ -195,7 +195,7 @@
             @click=""
           >
             <v-list-tile-action>
-              <!--<v-icon :style="{ color: selectColor(categoryItem)}">layers</v-icon>-->
+              <v-icon :style="{ color: selectColor(categoryItem)}">layers</v-icon>
             </v-list-tile-action>
 
             <v-list-tile-content>
