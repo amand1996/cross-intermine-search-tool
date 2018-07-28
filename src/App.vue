@@ -1036,36 +1036,39 @@
       deleteFromLocalStorage (localId) {
         localStorage.removeItem(localId)
         this.refreshLocalData()
+      },
+      /**
+       * This function runs during the created() lifehook of VueJS. It is activated and executed during the creation of views.
+       * This function fetches the list of InterMines from the InterMine Registry API endpoint and pushes it to an array for further usage.
+       * It also takes input query parameters from the URL.
+       * @param {String} search - URL query parameter which acts as the search term
+       * @yields {Array} The array containing the details of each InterMine instance
+       * @yields It also allows us to use the search tool by passing query parameters from any other external website
+       */
+      onCreated () {
+        let vm = this
+        axios.get(`https://registry.intermine.org/service/instances`)
+          .then(response => {
+            vm.minesList = response.data.instances
+            response.data.instances.map((mine) => {
+              this.selectIntermines.children.push({
+                text: mine.name,
+                url: mine.url,
+                neighbourhood: mine.neighbours
+              })
+            })
+          }).then(() => {
+            this.selectAll()
+            vm.progressDialog = false
+            if (this.$route.query.search) {
+              this.searchTerm = this.$route.query.search
+              this.searchMine()
+            }
+          })
       }
     },
-    /**
-     * This is the created() lifehook of VueJS. It is activated and executed during the creation of views.
-     * This function fetches the list of InterMines from the InterMine Registry API endpoint and pushes it to an array for further usage.
-     * It also takes input query parameters from the URL.
-     * @param {String} search - URL query parameter which acts as the search term
-     * @yields {Array} The array containing the details of each InterMine instance
-     * @yields It also allows us to use the search tool by passing query parameters from any other external website
-     */
     created () {
-      let vm = this
-      axios.get(`https://registry.intermine.org/service/instances`)
-      .then(response => {
-        vm.minesList = response.data.instances
-        response.data.instances.map((mine) => {
-          this.selectIntermines.children.push({
-            text: mine.name,
-            url: mine.url,
-            neighbourhood: mine.neighbours
-          })
-        })
-      }).then(() => {
-        this.selectAll()
-        vm.progressDialog = false
-        if (this.$route.query.search) {
-          this.searchTerm = this.$route.query.search
-          this.searchMine()
-        }
-      })
+      this.onCreated()
     }
   }
 </script>
