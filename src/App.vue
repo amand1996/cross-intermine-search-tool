@@ -724,7 +724,7 @@
       /**
        * This function is responsible for the initiation of search process.
        * It gets executed when the user enters a search term and hits Enter.
-       * @yields {Object} The InterMine QuickSearch APIs return the search results for all the selected mines and is then pushed to the relevant data variables.
+       * @yields {Array} The InterMine QuickSearch APIs return the search results for all the selected mines and is then pushed to the relevant data variables.
        */
       searchMine () {
         let vm = this
@@ -841,7 +841,7 @@
        * This function maps various genomic categories with their InterMine color coding.
        * It is used at various places throughout the application so as to differentiate between various categories.
        * @param {String} dataType - The name of the data-type or category is passed as a parameter into this function
-       * @returns {String} The function returns the InteMine color coding for that category
+       * @returns {String} The function returns the InterMine color coding for that category
        */
       selectColor (dataType) {
         switch (dataType) {
@@ -875,6 +875,12 @@
           default: return '#cccccc'
         }
       },
+      /**
+       * This function is used to push unique categories to the category list.
+       * It helps in filtering and keeping track of various categories during search.
+       * @param {Object} categoryObj - It is the object returned by every InterMine instance in response to the Search API
+       * @yields {Array} The array consists of all the unique categories returned by the Search APIs
+       */
       pushToCategoryList (categoryObj) {
         let vm = this
         let categoryArray = Object.keys(categoryObj)
@@ -888,12 +894,24 @@
         })
         vm.category.sort()
       },
+      /**
+       * This function is a demo implementation of the search tool.
+       * It triggers an automatic search for a given example keyword in all InterMine instances.
+       * @param {String} term - It is the example search term which is used to search in all the InterMine instances
+       * @yields {Array} All the InterMine instances return results.
+       */
       exampleSearch (term) {
         this.searchTerm = term
         this.toggleSelectMines = false
         this.selectAll()
         this.searchMine()
       },
+      /**
+       * This function is used to implement the concept of neighbourhoods in the Search Tool.
+       * All the InterMines with a given neighbourhood are automatically selected.
+       * @param {String} neighbourhood - It is a concept implemented in InterMine. Neighbourhoods are mainly of two types - MODs & Plants
+       * @yields {Array} Function gives an array of the InterMines of a particular neighbourhood.
+       */
       changeNeighbourhood (neighbourhood) {
         let vm = this
         vm.selected = []
@@ -903,12 +921,27 @@
           }
         })
       },
+      /**
+       * This function is used to generate the modal popup for every search result item.
+       * Every popup is generated dynamically by passing values into a modal template.
+       * @param {String} data - The result item data is passed to the function as a parameter
+       * @param {String} url - The url of the InterMine instance is also passed as a parameter
+       * @param {String} mineName - The name of the InterMine instance is also passed as a parameter
+       * @yields {Modal} This function builds a modal popup for every result item, which appears on click event over a result item.
+       */
       showModal (data, url, mineName) {
         data.url = url
         data.mineName = mineName
         this.modalData = data
         this.dialog = true
       },
+      /**
+       * The Quick Search API endpoint of InterMine returns a maximum of 100 result items on one API hit.
+       * This function is used to load more results from the InterMine Search API.
+       * @param {String} searchTerm - The search term for which more results are to be fetched
+       * @param {Object} selectedMine - The details of the mine from where the results are to be fetched
+       * @yields {Array} The array containing the search results is updated with more items
+       */
       loadMoreResults (searchTerm, selectedMine) {
         document.getElementById('loadMsg_' + selectedMine.text).innerHTML = 'Loading...'
 
@@ -936,6 +969,13 @@
           document.getElementById('loadMsg_' + selectedMine.text).innerHTML = 'Load more'
         })
       },
+      /**
+       * This function is used to save data to the local storage.
+       * In our case, the results are saved as Favourites and eventually are saved to the local storage.
+       * @param {String} mineName - Name of the InterMine instance
+       * @param {String} url - URL of the InterMine instance
+       * @param {Object} data - The result data object which is saved to the local storage
+       */
       saveToLocalStorage (data, mineName, url) {
         let vm = this
         data.mineName = mineName
@@ -950,21 +990,35 @@
           alert('Saved to Favourites!')
         }
       },
+      /**
+       * This function triggers the process of fetching data from local storage.
+       * It also activates the 'Favourites' tab.
+       */
       getLocalStorage () {
         let vm = this
         vm.localStorageActive = true
         vm.tabModal = 'tab-localstorage'
         vm.refreshLocalData()
       },
+      /**
+       * This function activates the 'Explore InterMines' tab.
+       */
       activateInterMinesTab () {
         let vm = this
         vm.interminesActive = true
         vm.tabModal = 'tab-intermines'
       },
+      /**
+       * This function activates the 'Home' tab.
+       */
       activateHomeTab () {
         let vm = this
         vm.tabModal = 'tab-home'
       },
+      /**
+       * This function is used to load / refresh the local storage data, i.e. FAVOURITE items data, and push it to a data property in order to render on the webpage.
+       * @yields {Array} The array containing the local storage items or FAVOURITE items
+       */
       refreshLocalData () {
         let vm = this
         vm.localData = []
@@ -975,11 +1029,23 @@
           }
         }
       },
+      /**
+       * This function is used to delete the local storage data, i.e. FAVOURITE items data.
+       * @yields {Array} After the deletion of an item from the local storage, the array containing the local storage data is updated
+       */
       deleteFromLocalStorage (localId) {
         localStorage.removeItem(localId)
         this.refreshLocalData()
       }
     },
+    /**
+     * This is the created() lifehook of VueJS. It is activated and executed during the creation of views.
+     * This function fetches the list of InterMines from the InterMine Registry API endpoint and pushes it to an array for further usage.
+     * It also takes input query parameters from the URL.
+     * @param {String} search - URL query parameter which acts as the search term
+     * @yields {Array} The array containing the details of each InterMine instance
+     * @yields It also allows us to use the search tool by passing query parameters from any other external website
+     */
     created () {
       let vm = this
       axios.get(`https://registry.intermine.org/service/instances`)

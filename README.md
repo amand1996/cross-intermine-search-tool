@@ -22,3 +22,11 @@ npm run build --report
 npm run unit
 
 ```
+
+## Test Reports
+
+https://cross-intermine-search-tool.herokuapp.com/test-report
+
+## Documentation
+
+https://cross-intermine-search-tool.herokuapp.com/docs
