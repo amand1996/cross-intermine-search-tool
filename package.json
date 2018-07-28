@@ -10,7 +10,7 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "build": "node build/build.js",
+    "build": "node build/build.js && npm run build-docs && npm run unit",
     "build-docs": "./node_modules/.bin/jsdoc -c conf.json -r -d docs"
   },
   "dependencies": {

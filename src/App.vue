@@ -205,6 +205,17 @@
             </v-list-tile-content>
           </v-list-tile>
 
+          <v-list-tile @click="" :href="'http://' + host + '/docs'" target="_blank">
+            <v-list-tile-action>
+              <v-icon color="blue-grey darken-1">book</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                Documentation
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
           <v-list-tile @click="" href="http://chat.intermine.org/" target="_blank">
             <v-list-tile-action>
               <v-icon color="blue-grey darken-1">chat_bubble</v-icon>
@@ -280,9 +291,6 @@
             <template v-for="searchPoints in calculateSearchPoints(modalData.relevance)">
               <v-icon small color="yellow" :key="searchPoints + '_active'">star</v-icon>
             </template>
-            <!-- <template v-for="searchPoints in (5 - calculateSearchPoints(modalData.relevance))">
-              <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">star</v-icon>
-            </template> -->
           </v-card-title>
 
           <v-card-text>
@@ -655,6 +663,32 @@
   import axios from 'axios'
   import intermine from 'imjs'
 
+  /**
+   * @module Cross-InterMine-Search-Tool
+   * @vue-data {Array} [localData= (empty array)] - Used to store the local storage data (Favourites) for rendering
+   * @vue-data {Boolean} [toggleSelectCategory=true] - Toggle flag for Select All/None in Categories section
+   * @vue-data {Boolean} [toggleSelectMines=false] - Toggle flag for Select All/None in Select Mines section
+   * @vue-data {Boolean} [localStorageActive=false] - Toggle flag for activating the 'Favourites' tab
+   * @vue-data {Boolean} [interminesActive=false] - Toggle flag for activating the 'Explore InterMines' tab
+   * @vue-data {Boolean} [progressDialog=true] - Flag for activating the 'Progress Loading' dialog on page load
+   * @vue-data {Boolean} [dialog=false] - Toggle flag for activating the 'Result popup' modal when a search result is clicked
+   * @vue-data {Boolean} [drawer=null] - Toggle flag for activating the side navigation drawer
+   * @vue-data {String} [tabModal='tab-home'] - Toggle flag for activating the tabs when they are clicked
+   * @vue-data {String} [searchTerm=''] - It stores the current search term
+   * @vue-data {Object} [selectIntermines={ }] - It contains the metadata and the complete list of InterMines fetched from the Registry
+   * @vue-data {Number} [scoreFilter=1] - It is used to store the 'Relevance Points' filter value
+   * @vue-data {Array} [selected=(empty array)] - It is used to store the list of selected InterMines for searching
+   * @vue-data {Array} [category=(empty array)] - It is used to store the list of all the categories present in a Search instance
+   * @vue-data {Array} [categoryFilters=(empty array)] - It is used to store the list of selected categories for filtering the results
+   * @vue-data {Boolean} [searchActive=false] - Flag for activating the results tab
+   * @vue-data {Array} [emptyResultMines=(empty array)] - It is the list of all those InterMines which do not have any results
+   * @vue-data {Array} [failedSearchMines=(empty array)] - It is the list of all those InterMines which result in a failure during the search process
+   * @vue-data {String} [protocol=document.location.protocol] - Stores the name of the protocol used (http/https)
+   * @vue-data {String} [host=document.location.host] - Stores the name of the host
+   * @vue-data {Object} [modalData=null] - Stores the result data for the result modal popup
+   * @vue-data {Object} [minesList=null] - Stores the metadata for InterMine instances fetched from the Registry (for 'Explore InterMines' section)
+   */
+
   export default {
     data: () => ({
       localData: [],
@@ -666,9 +700,7 @@
       dialog: false,
       drawer: null,
       tabModal: 'tab-home',
-      errors: [],
       searchTerm: '',
-      text: '',
       selectIntermines: {
         icon: 'keyboard_arrow_up',
         'icon-alt': 'keyboard_arrow_down',
@@ -676,18 +708,8 @@
         model: true,
         children: []
       },
-      filters: {
-        icon: 'keyboard_arrow_up',
-        'icon-alt': 'keyboard_arrow_down',
-        text: 'Filters',
-        model: true,
-        children: [
-          {'text': 'Plants'}
-        ]
-      },
       scoreFilter: '1',
       selected: [],
-      selectedFilters: [],
       category: [],
       categoryFilters: [],
       searchActive: false,
@@ -699,6 +721,11 @@
       minesList: null
     }),
     methods: {
+      /**
+       * This function is responsible for the initiation of search process.
+       * It gets executed when the user enters a search term and hits Enter.
+       * @yields {Object} The InterMine QuickSearch APIs return the search results for all the selected mines and is then pushed to the relevant data variables.
+       */
       searchMine () {
         let vm = this
         if (vm.searchTerm.trim() === '' || vm.selected.length === 0) {
@@ -743,6 +770,11 @@
           })
         })
       },
+      /**
+       * This function is used to select all / none InterMines for running the search on them.
+       * It gets executed when the user hits the 'Select All/None' button in the InterMines checkbox section.
+       * @yields {Array} It pushes (or removes) all the InterMines to the list containing the selected InterMines.
+       */
       selectAll () {
         let vm = this
         if (vm.toggleSelectMines) {
@@ -755,6 +787,11 @@
         }
         vm.toggleSelectMines = !vm.toggleSelectMines
       },
+      /**
+       * This function is used to select all / none Categories after running the search process.
+       * It gets executed when the user hits the 'Select All/None' button in the Categories filter section.
+       * @yields {Array} It pushes (or removes) all the Categories to the list containing the selected Categories.
+       */
       selectAllNoneCategories () {
         let vm = this
         if (vm.toggleSelectCategory) {
@@ -767,12 +804,32 @@
         }
         vm.toggleSelectCategory = !vm.toggleSelectCategory
       },
+      /**
+       * It calculates the relevance rating (on a scale of 5) based on the relevance score of the result item for a particular search.
+       * It uses a logical formula to get to the resultant value.
+       * @param {Float} score - Relevance score as returned by th Search API
+       * @returns {Number} The final relevance rating on a scale of 5
+       */
       calculateSearchPoints (score) {
         return Math.round(Math.max(0.1, Math.min(1, score)) * 5)
       },
+      /**
+       * It generates the report / portal link for a particular result item..
+       * The link is generated by using the InterMine URL and the ID of the result item.
+       * @param {Number} id - InterMine Search API returns a unique ID for every result item (ID is used for the purpose of indexing in the various InterMine data warehouses)
+       * @param {String} url - Every InterMine instance has a unique base URL
+       * @returns {String} The final generated portal link for the given item
+       */
       generateReportLink (id, url) {
         return url + '/report.do?id=' + id
       },
+      /**
+       * This function is used for filtering the search results.
+       * The search results are mainly filtered based on their Category and their Relevance Score.
+       * The filtering is done by using the Array Filter operation of JavaScript.
+       * @param {Array} data - The array of search result items is passed into the function as a parameter
+       * @returns {Array} The final filtered array of results is returned after applying the filter operation.
+       */
       filterResults (data) {
         let vm = this
         if (!Array.isArray(data)) return data
@@ -780,6 +837,12 @@
           return (vm.calculateSearchPoints(resultItem.relevance) >= vm.scoreFilter) && (vm.categoryFilters.indexOf(resultItem.type) >= 0)
         })
       },
+      /**
+       * This function maps various genomic categories with their InterMine color coding.
+       * It is used at various places throughout the application so as to differentiate between various categories.
+       * @param {String} dataType - The name of the data-type or category is passed as a parameter into this function
+       * @returns {String} The function returns the InteMine color coding for that category
+       */
       selectColor (dataType) {
         switch (dataType) {
           case 'Genes':
