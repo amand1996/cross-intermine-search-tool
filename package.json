@@ -1,16 +1,15 @@
 {
-  "name": "cross-intermine-search-tool",
+  "name": "Cross-InterMine-Search-Tool",
   "version": "1.0.0",
-  "description": "Currently, we have around 30+ mines (and still growing) all around the globe. All mines have their own separate APIs and their own separate portals. In order to search for a gene, a person has to go to the separate mine portals and search for the gene. If someone wishes to find a gene in multiple mines at the same time, there is no such tool which allows this functionality. This project will allow the user to search all or many mines at once and show the results with the respective details.",
+  "description": "Search Tool for InterMine",
   "author": "Aman Dwivedi <dwivedi.aman96@gmail.com>",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "node server.js",
-    "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
-    "test": "npm run unit",
+    "test": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "build": "node build/build.js && npm run build-docs && npm run unit",
+    "build": "node build/build.js",
     "build-docs": "./node_modules/.bin/jsdoc -c conf.json -r -d docs"
   },
   "dependencies": {

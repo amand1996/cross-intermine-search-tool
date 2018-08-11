@@ -25,7 +25,7 @@
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
-                Favourites
+                Saved Items
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -367,7 +367,7 @@
             :ripple="false"
             v-if="localStorageActive"
           >
-            Favourites
+            Saved Items
           </v-tab>
           <v-tab
             :href="'#tab-intermines'"
@@ -454,7 +454,7 @@
                                   <div style="font-style: italic;">{{ item.url }}</div>
                                 </div>
                               </v-flex>
-                              <v-flex xs2>
+                              <v-flex xs2 style="align-self: center">
                                 <v-card-media
                                   v-if="item.images !== undefined && Object.keys(item.images).indexOf('logo') >= 0"
                                   :src="item.images['logo']"
@@ -506,7 +506,7 @@
                           >
                             delete
                           </v-icon>
-                          <span>Delete from Favourites</span>
+                          <span>Delete from Saved Items</span>
                         </v-tooltip>
                         <small><strong>| Relevance Score &nbsp;</strong></small>
                         <template v-for="searchPoints in calculateSearchPoints(item.relevance)">
@@ -536,7 +536,7 @@
               </v-list>
             </template>
             <template v-else>
-              No Favourites added
+              No Saved Items found
             </template>
           </v-tab-item>
 
@@ -609,7 +609,7 @@
                                     >
                                       library_books
                                     </v-icon>
-                                    <span>Save to Favourites</span>
+                                    <span>Add to Saved Items</span>
                                   </v-tooltip>
                                   <small><strong>| Relevance Score &nbsp;</strong></small>
                                   <template v-for="searchPoints in calculateSearchPoints(mineResults.relevance)">
@@ -665,10 +665,10 @@
 
   /**
    * @module Cross-InterMine-Search-Tool
-   * @vue-data {Array} [localData= (empty array)] - Used to store the local storage data (Favourites) for rendering
+   * @vue-data {Array} [localData= (empty array)] - Used to store the local storage data (Saved Items) for rendering
    * @vue-data {Boolean} [toggleSelectCategory=true] - Toggle flag for Select All/None in Categories section
    * @vue-data {Boolean} [toggleSelectMines=false] - Toggle flag for Select All/None in Select Mines section
-   * @vue-data {Boolean} [localStorageActive=false] - Toggle flag for activating the 'Favourites' tab
+   * @vue-data {Boolean} [localStorageActive=false] - Toggle flag for activating the 'Saved Items' tab
    * @vue-data {Boolean} [interminesActive=false] - Toggle flag for activating the 'Explore InterMines' tab
    * @vue-data {Boolean} [progressDialog=true] - Flag for activating the 'Progress Loading' dialog on page load
    * @vue-data {Boolean} [dialog=false] - Toggle flag for activating the 'Result popup' modal when a search result is clicked
@@ -971,7 +971,7 @@
       },
       /**
        * This function is used to save data to the local storage.
-       * In our case, the results are saved as Favourites and eventually are saved to the local storage.
+       * In our case, the results are added to Saved Items and eventually are saved to the local storage.
        * @param {String} mineName - Name of the InterMine instance
        * @param {String} url - URL of the InterMine instance
        * @param {Object} data - The result data object which is saved to the local storage
@@ -987,12 +987,12 @@
         } else {
           localStorage.setItem(localId, JSON.stringify(data))
           vm.refreshLocalData()
-          alert('Saved to Favourites!')
+          alert('Added to Saved Items!')
         }
       },
       /**
        * This function triggers the process of fetching data from local storage.
-       * It also activates the 'Favourites' tab.
+       * It also activates the 'Saved Items' tab.
        */
       getLocalStorage () {
         let vm = this
