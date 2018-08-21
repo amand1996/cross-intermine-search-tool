@@ -579,7 +579,7 @@
                       </v-toolbar>
                       <v-card style="overflow-y: auto; max-height: 350px; height: auto;">
 
-                        <v-list three-line subheader>
+                        <v-list two-line subheader>
 
                           <template v-if="selectedMine.result == undefined">
                             <h3 style="text-align: center;">Loading...</h3>
@@ -619,7 +619,7 @@
                                     <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">star</v-icon>
                                   </template> -->
                                 </v-list-tile-title>
-                                <v-list-tile-sub-title>
+                                <v-list-tile-sub-title style="text-overflow: ellipsis;">
                                   <template v-for="(mineResultsField, key, j) in mineResults.fields">
                                     <span :key="j"><strong>| {{ key.toUpperCase() }}</strong> - {{ mineResultsField }} </span>
                                   </template>
