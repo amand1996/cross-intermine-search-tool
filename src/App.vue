@@ -661,7 +661,6 @@
 
 <script>
   import axios from 'axios'
-  import intermine from 'imjs'
 
   /**
    * @module Cross-InterMine-Search-Tool
