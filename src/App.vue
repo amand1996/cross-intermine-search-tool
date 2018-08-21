@@ -661,7 +661,6 @@
 
 <script>
   import axios from 'axios'
-  import intermine from 'imjs'
 
   /**
    * @module Cross-InterMine-Search-Tool
@@ -742,7 +741,7 @@
         vm.categoryFilters = []
         vm.selected.map((mineObj) => {
           mineObj.result = undefined
-          let mineService = new intermine.Service({root: mineObj.url})
+          let mineService = new intermine.Service({root: mineObj.url}) // eslint-disable-line
           let options = {
             q: vm.searchTerm
           }
@@ -946,7 +945,7 @@
         document.getElementById('loadMsg_' + selectedMine.text).innerHTML = 'Loading...'
 
         let vm = this
-        let mineService = new intermine.Service({root: selectedMine.url})
+        let mineService = new intermine.Service({root: selectedMine.url}) // eslint-disable-line
         let mineIndex = vm.selected.indexOf(selectedMine)
 
         let options = {
