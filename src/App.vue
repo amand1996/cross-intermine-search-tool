@@ -483,21 +483,20 @@
             :id="'tab-localstorage'"
           >
             <template v-if="localData.length != 0">
-              <v-list three-line subheader>
+              <v-list two-line subheader>
                 <template>
                   <v-list-tile
                     v-for="(item, i) in localData"
                     :key="i"
                     avatar
                     @click="showModal(item, item.url, item.mineName)"
-                    :style="{ color: selectColor(item.type)}"
                   >
                     <v-list-tile-avatar>
                       <strong>{{ i+1 }}</strong>
                     </v-list-tile-avatar>
                     <v-list-tile-content>
-                      <v-list-tile-title>
-                        <strong>{{ item.mineName }} | Type - {{ item.type }} </strong>
+                      <v-list-tile-title :style="{ borderLeft: 'solid 4px ' + selectColor(item.type) }">
+                        <strong> &nbsp  {{ item.mineName }} | Type - {{ item.type }} </strong>
                         <v-tooltip bottom>
                           <v-icon
                             slot="activator"
@@ -513,7 +512,7 @@
                           <v-icon small color="yellow" :key="searchPoints + '_active'">star</v-icon>
                         </template>
                       </v-list-tile-title>
-                      <v-list-tile-sub-title>
+                      <v-list-tile-sub-title style="text-overflow: ellipsis;">
                         <template v-for="(mineResultsField, key, j) in item.fields">
                           <span :key="j"><strong>| {{ key.toUpperCase() }}</strong> - {{ mineResultsField }} </span>
                         </template>
