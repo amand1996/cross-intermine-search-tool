@@ -483,21 +483,20 @@
             :id="'tab-localstorage'"
           >
             <template v-if="localData.length != 0">
-              <v-list three-line subheader>
+              <v-list two-line subheader>
                 <template>
                   <v-list-tile
                     v-for="(item, i) in localData"
                     :key="i"
                     avatar
                     @click="showModal(item, item.url, item.mineName)"
-                    :style="{ color: selectColor(item.type)}"
                   >
                     <v-list-tile-avatar>
                       <strong>{{ i+1 }}</strong>
                     </v-list-tile-avatar>
                     <v-list-tile-content>
-                      <v-list-tile-title>
-                        <strong>{{ item.mineName }} | Type - {{ item.type }} </strong>
+                      <v-list-tile-title :style="{ borderLeft: 'solid 4px ' + selectColor(item.type) }">
+                        <strong> &nbsp  {{ item.mineName }} | Type - {{ item.type }} </strong>
                         <v-tooltip bottom>
                           <v-icon
                             slot="activator"
@@ -513,7 +512,7 @@
                           <v-icon small color="yellow" :key="searchPoints + '_active'">star</v-icon>
                         </template>
                       </v-list-tile-title>
-                      <v-list-tile-sub-title>
+                      <v-list-tile-sub-title style="text-overflow: ellipsis;">
                         <template v-for="(mineResultsField, key, j) in item.fields">
                           <span :key="j"><strong>| {{ key.toUpperCase() }}</strong> - {{ mineResultsField }} </span>
                         </template>
@@ -579,7 +578,7 @@
                       </v-toolbar>
                       <v-card style="overflow-y: auto; max-height: 350px; height: auto;">
 
-                        <v-list three-line subheader>
+                        <v-list two-line subheader>
 
                           <template v-if="selectedMine.result == undefined">
                             <h3 style="text-align: center;">Loading...</h3>
@@ -619,7 +618,7 @@
                                     <v-icon small color="grey lighten-1" :key="searchPoints + '_inactive'">star</v-icon>
                                   </template> -->
                                 </v-list-tile-title>
-                                <v-list-tile-sub-title>
+                                <v-list-tile-sub-title style="text-overflow: ellipsis;">
                                   <template v-for="(mineResultsField, key, j) in mineResults.fields">
                                     <span :key="j"><strong>| {{ key.toUpperCase() }}</strong> - {{ mineResultsField }} </span>
                                   </template>
@@ -661,7 +660,6 @@
 
 <script>
   import axios from 'axios'
-  import intermine from 'imjs'
 
   /**
    * @module Cross-InterMine-Search-Tool
@@ -742,7 +740,7 @@
         vm.categoryFilters = []
         vm.selected.map((mineObj) => {
           mineObj.result = undefined
-          let mineService = new intermine.Service({root: mineObj.url})
+          let mineService = new intermine.Service({root: mineObj.url}) // eslint-disable-line
           let options = {
             q: vm.searchTerm
           }
@@ -946,7 +944,7 @@
         document.getElementById('loadMsg_' + selectedMine.text).innerHTML = 'Loading...'
 
         let vm = this
-        let mineService = new intermine.Service({root: selectedMine.url})
+        let mineService = new intermine.Service({root: selectedMine.url}) // eslint-disable-line
         let mineIndex = vm.selected.indexOf(selectedMine)
 
         let options = {
