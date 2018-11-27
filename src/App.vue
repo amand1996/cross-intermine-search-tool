@@ -66,27 +66,18 @@
               </v-list-tile-content>
             </v-list-tile>
 
-            <v-list-tile @click="changeNeighbourhood('MODs')">
-              <v-list-tile-action>
-                <v-icon color="blue-grey darken-1">image_search</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  Only MODs
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-
-            <v-list-tile @click="changeNeighbourhood('Plants')">
-              <v-list-tile-action>
-                <v-icon color="blue-grey darken-1">image_search</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  Only Plants
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+            <template v-for="(child, i) in neighbourhoods">
+              <v-list-tile @click="changeNeighbourhood(child)" :key="i">
+                <v-list-tile-action>
+                  <v-icon color="blue-grey darken-1">image_search</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    Only {{child}}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
 
             <v-list-tile
               v-for="(child, i) in selectIntermines.children"
@@ -685,6 +676,7 @@
    * @vue-data {String} [host=document.location.host] - Stores the name of the host
    * @vue-data {Object} [modalData=null] - Stores the result data for the result modal popup
    * @vue-data {Object} [minesList=null] - Stores the metadata for InterMine instances fetched from the Registry (for 'Explore InterMines' section)
+   * @vue-data {Array} [neighbourhoods=(empty array)] - It contains the set of all neighbourhoods which are present in the InterMine registry
    */
 
   export default {
@@ -716,7 +708,8 @@
       protocol: document.location.protocol,
       host: document.location.host,
       modalData: null,
-      minesList: null
+      minesList: null,
+      neighbourhoods: []
     }),
     methods: {
       /**
@@ -1048,7 +1041,14 @@
         axios.get(`https://registry.intermine.org/service/instances`)
           .then(response => {
             vm.minesList = response.data.instances
+            this.neighbourhoods = []
             response.data.instances.map((mine) => {
+              mine.neighbours.map((neighbourhoodItem) => {
+                if (this.neighbourhoods.indexOf(neighbourhoodItem) === -1) {
+                  this.neighbourhoods.push(neighbourhoodItem)
+                }
+              })
+              this.neighbourhoods.push()
               this.selectIntermines.children.push({
                 text: mine.name,
                 url: mine.url,
