@@ -1048,7 +1048,6 @@
                   this.neighbourhoods.push(neighbourhoodItem)
                 }
               })
-              this.neighbourhoods.push()
               this.selectIntermines.children.push({
                 text: mine.name,
                 url: mine.url,
