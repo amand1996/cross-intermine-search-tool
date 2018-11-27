@@ -243,7 +243,7 @@
     >
       <v-toolbar-title style="width: 18em" class="ml-0 pl-3" id="app_title">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down">Cross Intermine Search Tool</span>
+        <span class="hidden-sm-and-down">Cross InterMine Search Tool</span>
       </v-toolbar-title>
       <v-layout row align-center style="max-width: 650px" id="searchBox">
         <v-text-field
@@ -398,9 +398,9 @@
                                 ></v-card-media>
                                 <br>
                                 <div>
-                                  <h1>Cross Intermine Search Tool</h1><br>
-                                  <p style="font-size: larger;">Select the Intermines you are interested in; and type a search keyword or symbol into the searchbar up the top and hit enter.
-                                    If you're not sure what Intermines to choose or what to search, check out the results for <span class="example" @click="exampleSearch('adh')">ADH</span>, <span class="example" @click="exampleSearch('brca1')">BRCA1</span> or <span class="example" @click="exampleSearch('gata1')">GATA1</span></p>
+                                  <h1>Cross InterMine Search Tool</h1><br>
+                                  <p style="font-size: larger;">Select the InterMines you are interested in; and type a search keyword or symbol into the searchbar up the top and hit enter.
+                                    If you're not sure what InterMines to choose or what to search, check out the results for <span class="example" @click="exampleSearch('adh')">ADH</span>, <span class="example" @click="exampleSearch('brca1')">BRCA1</span> or <span class="example" @click="exampleSearch('gata1')">GATA1</span></p>
                                 </div>
                               </v-flex>
                             </v-layout>
@@ -694,7 +694,7 @@
       selectIntermines: {
         icon: 'keyboard_arrow_up',
         'icon-alt': 'keyboard_arrow_down',
-        text: 'Select Intermines',
+        text: 'Select InterMines',
         model: true,
         children: []
       },
